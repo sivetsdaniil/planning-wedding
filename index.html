@@ -19,8 +19,9 @@
             <a href="index.html" class="nav-logo">Eternal Moments</a>
             <ul class="nav-links">
                 <li><a href="#home">Главная</a></li>
-                <li><a href="services.html">Услуги</a></li>
+                <li><a href="#services">Услуги</a></li>
                 <li><a href="portfolio.html">Портфолио</a></li>
+                <li><a href="#calculator">Калькулятор</a></li>
                 <li><a href="#contact">Контакты</a></li>
             </ul>
         </div>
@@ -97,6 +98,48 @@
             </div>
             <div style="text-align: center; margin-top: 40px;">
                 <a href="portfolio.html" class="btn btn-outline">Посмотреть все работы</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="calculator" class="reveal" style="background-color: #faf9f7;">
+        <div class="container">
+            <div class="section-title">
+                <h2>Калькулятор бюджета</h2>
+                <div class="divider"></div>
+            </div>
+            <div class="calculator-container">
+                <div class="calc-group">
+                    <label>Количество гостей: <span id="guests-val" class="calc-value">50</span></label>
+                    <input type="range" id="guests" min="10" max="300" value="50">
+                </div>
+                <div class="calc-group">
+                    <label>Уровень сервиса:</label>
+                    <select id="level" class="form-group" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">
+                        <option value="standard">Стандарт (уютно и со вкусом)</option>
+                        <option value="premium">Премиум (высокий уровень деталей)</option>
+                        <option value="luxury">Лакшери (эксклюзивные решения)</option>
+                    </select>
+                </div>
+                <div class="calc-results">
+                    <div class="result-item">
+                        <span>Банкет и площадка:</span>
+                        <span id="res-banquet">0 BYN</span>
+                    </div>
+                    <div class="result-item">
+                        <span>Декор и флористика:</span>
+                        <span id="res-decor">0 BYN</span>
+                    </div>
+                    <div class="result-item">
+                        <span>Фото и видео:</span>
+                        <span id="res-media">0 BYN</span>
+                    </div>
+                    <div class="result-item total">
+                        <span>Ориентировочный итог:</span>
+                        <span id="res-total">0 BYN</span>
+                    </div>
+                    <p class="calc-disclaimer">*Расчет является предварительным и зависит от конкретных пожеланий и даты.</p>
+                </div>
             </div>
         </div>
     </section>
@@ -221,6 +264,50 @@
         };
         window.addEventListener('scroll', revealOnScroll);
         window.addEventListener('load', revealOnScroll);
+
+        // Budget Calculator Logic
+        const guestsInput = document.getElementById('guests');
+        const levelSelect = document.getElementById('level');
+        const guestsValDisplay = document.getElementById('guests-val');
+        
+        const resBanquet = document.getElementById('res-banquet');
+        const resDecor = document.getElementById('res-decor');
+        const resMedia = document.getElementById('res-media');
+        const resTotal = document.getElementById('res-total');
+
+        const calculate = () => {
+            const guests = parseInt(guestsInput.value);
+            const level = levelSelect.value;
+            guestsValDisplay.innerText = guests;
+
+            let guestPrice = 120; // Standard
+            let decorBase = 1500;
+            let mediaBase = 2000;
+
+            if (level === 'premium') {
+                guestPrice = 200;
+                decorBase = 3500;
+                mediaBase = 4000;
+            } else if (level === 'luxury') {
+                guestPrice = 450;
+                decorBase = 8000;
+                mediaBase = 7000;
+            }
+
+            const banquet = guests * guestPrice;
+            const decor = decorBase + (guests * 20); // Scale decor with guest count
+            const media = mediaBase;
+            const total = banquet + decor + media;
+
+            resBanquet.innerText = banquet.toLocaleString() + ' BYN';
+            resDecor.innerText = decor.toLocaleString() + ' BYN';
+            resMedia.innerText = media.toLocaleString() + ' BYN';
+            resTotal.innerText = total.toLocaleString() + ' BYN';
+        };
+
+        guestsInput.addEventListener('input', calculate);
+        levelSelect.addEventListener('change', calculate);
+        calculate(); // Initial run
     </script>
 
 </body>

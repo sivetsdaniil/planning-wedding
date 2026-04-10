@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Цены - Eternal Moments Wedding Planning</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Дополнительные стили для анимации View Transitions, если поддерживается */
+        ::view-transition-group(*), 
+        ::view-transition-old(*), 
+        ::view-transition-new(*) { 
+            animation-duration: 0.25s; 
+            animation-timing-function: cubic-bezier(0.19, 1, 0.22, 1); 
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="container">
+            <a href="index.html" class="nav-logo">Eternal Moments</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="services.html">Услуги</a></li>
+                <li><a href="portfolio.html">Портфолио</a></li>
+                <li><a href="pricing.html" style="color: var(--primary-color);">Цены</a></li>
+                <li><a href="index.html#calculator">Калькулятор</a></li>
+                <li><a href="index.html#contact">Контакты</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Стоимость услуг</h1>
+            <p>Прозрачные пакеты под любой масштаб торжества</p>
+            <div class="divider" style="width: 100px; height: 2px; background: var(--accent-color); margin: 20px auto;"></div>
+        </div>
+    </header>
+
+    <section class="pricing-page">
+        <div class="container">
+            <div class="pricing-grid">
+                <!-- Пакет 1 -->
+                <div class="pricing-card reveal">
+                    <h3>Координация</h3>
+                    <span class="price">от 1 200 BYN</span>
+                    <ul class="pricing-features">
+                        <li class="included">Работа за 2 недели до свадьбы</li>
+                        <li class="included">Контроль тайминга дня</li>
+                        <li class="included">Координация подрядчиков</li>
+                        <li class="not-included">Подбор площадки</li>
+                        <li class="not-included">Разработка концепции</li>
+                    </ul>
+                    <a href="index.html#contact" class="btn btn-outline">Выбрать</a>
+                </div>
+
+                <!-- Пакет 2 (Популярный) -->
+                <div class="pricing-card popular reveal">
+                    <div class="badge">Популярный</div>
+                    <h3>Оптимальный</h3>
+                    <span class="price">от 3 500 BYN</span>
+                    <ul class="pricing-features">
+                        <li class="included">Полное планирование</li>
+                        <li class="included">Подбор всех подрядчиков</li>
+                        <li class="included">Разработка стиля и декора</li>
+                        <li class="included">Координация дня (2 чел.)</li>
+                        <li class="not-included">Эксклюзивный продакшн</li>
+                    </ul>
+                    <a href="index.html#contact" class="btn">Выбрать</a>
+                </div>
+
+                <!-- Пакет 3 -->
+                <div class="pricing-card reveal">
+                    <h3>Premium</h3>
+                    <span class="price">от 7 000 BYN</span>
+                    <ul class="pricing-features">
+                        <li class="included">VIP-сопровождение 24/7</li>
+                        <li class="included">Эксклюзивная концепция</li>
+                        <li class="included">Координация (3+ чел.)</li>
+                        <li class="included">Режиссура программы</li>
+                        <li class="included">Технический продакшн</li>
+                    </ul>
+                    <a href="index.html#contact" class="btn btn-outline">Выбрать</a>
+                </div>
+            </div>
+
+            <!-- Дополнительные услуги -->
+            <div class="extra-services reveal">
+                <div class="section-title">
+                    <h2>Дополнительные услуги</h2>
+                    <div class="divider"></div>
+                </div>
+                <div class="extra-grid">
+                    <div class="extra-item">
+                        <span>Организация девичника/мальчишника</span>
+                        <strong>от 500 BYN</strong>
+                    </div>
+                    <div class="extra-item">
+                        <span>Поиск свадебного образа</span>
+                        <strong>от 300 BYN</strong>
+                    </div>
+                    <div class="extra-item">
+                        <span>Разработка сайта-приглашения</span>
+                        <strong>от 250 BYN</strong>
+                    </div>
+                    <div class="extra-item">
+                        <span>Помощь в регистрации (выездная)</span>
+                        <strong>от 400 BYN</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Аккордеон -->
+            <div class="faq-section reveal">
+                <div class="section-title">
+                    <h2>Частые вопросы</h2>
+                    <div class="divider"></div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>За какое время нужно начинать подготовку?</span>
+                        <span class="faq-toggle">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Мы рекомендуем начинать подготовку за 6-12 месяцев до даты. Это позволит забронировать лучшие площадки и топовых подрядчиков. Однако у нас есть опыт организации свадеб и за 1 месяц.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Входит ли декор в стоимость пакета?</span>
+                        <span class="faq-toggle">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>В стоимость пакета входит работа организатора по разработке концепции и подбору декораторов. Сами материалы, цветы и работа декораторов оплачиваются отдельно согласно смете.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Работаете ли вы в других городах?</span>
+                        <span class="faq-toggle">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Да, мы организуем свадьбы по всей Беларуси и за её пределами. Транспортные расходы и проживание команды в таких случаях обсуждаются индивидуально.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="cta-bar reveal">
+        <div class="container">
+            <h2>Не знаете, какой пакет выбрать?</h2>
+            <p style="margin-bottom: 30px;">Запишитесь на бесплатную встречу, и мы подберем оптимальное решение под ваш бюджет.</p>
+            <a href="index.html#contact" class="btn">Получить консультацию</a>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <a href="index.html" class="footer-logo">Eternal Moments</a>
+            <div class="social-links">
+                <a href="https://instagram.com" target="_blank">Instagram</a>
+                <a href="https://pinterest.com" target="_blank">Pinterest</a>
+                <a href="https://t.me/kidcrytoday" target="_blank">Telegram</a>
+            </div>
+            <p>&copy; 2026 Eternal Moments Wedding Planning. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <script>
+        // FAQ Accordion Logic
+        const faqItems = document.querySelectorAll('.faq-item');
+        faqItems.forEach(item => {
+            const question = item.querySelector('.faq-question');
+            question.addEventListener('click', () => {
+                const isActive = item.classList.contains('active');
+                
+                // Close all other items
+                faqItems.forEach(otherItem => otherItem.classList.remove('active'));
+                
+                // Toggle current item
+                if (!isActive) {
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // Scroll Reveal
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealOnScroll = () => {
+            revealElements.forEach(el => {
+                const elementTop = el.getBoundingClientRect().top;
+                if (elementTop < window.innerHeight - 100) {
+                    el.classList.add('active');
+                }
+            });
+        };
+        window.addEventListener('scroll', revealOnScroll);
+        window.addEventListener('load', revealOnScroll);
+    </script>
+</body>
+</html>
