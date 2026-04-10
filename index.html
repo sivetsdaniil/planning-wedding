@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wedding Planning - Создаем свадьбу вашей мечты</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div id="lightbox" class="lightbox">
+        <span class="lightbox-close">&times;</span>
+        <img src="" alt="Full View">
+    </div>
+
+    <nav>
+        <div class="container">
+            <a href="index.html" class="nav-logo">Eternal Moments</a>
+            <ul class="nav-links">
+                <li><a href="#home">Главная</a></li>
+                <li><a href="services.html">Услуги</a></li>
+                <li><a href="portfolio.html">Портфолио</a></li>
+                <li><a href="#contact">Контакты</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section id="home" class="hero" style="height: 100vh;">
+        <div class="hero-content">
+            <h1>Создаем свадьбу вашей мечты</h1>
+            <p>Элегантность. Стиль. Ваши идеальные моменты.</p>
+            <a href="#contact" class="btn">Бесплатная консультация</a>
+        </div>
+    </section>
+
+    <section id="services" class="reveal">
+        <div class="container">
+            <div class="section-title">
+                <h2>Наши Услуги</h2>
+                <div class="divider"></div>
+            </div>
+            <div class="services-grid">
+                <div class="service-card">
+                    <h3>Полная Организация</h3>
+                    <p>От концепции до финального танца. Мы берем на себя все заботы по планированию и координации.</p>
+                </div>
+                <div class="service-card">
+                    <h3>Декор и Флористика</h3>
+                    <p>Создаем уникальную атмосферу, которая отражает вашу индивидуальность и стиль пары.</p>
+                </div>
+                <div class="service-card">
+                    <h3>Координация дня</h3>
+                    <p>Вы наслаждаетесь праздником, а мы следим за тем, чтобы всё шло по плану до мельчайших деталей.</p>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="services.html" class="btn btn-outline">Узнать больше об услугах</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="portfolio" class="reveal" style="background-color: #fff;">
+        <div class="container">
+            <div class="section-title">
+                <h2>Портфолио</h2>
+                <div class="divider"></div>
+            </div>
+            <div class="portfolio-grid">
+                <div class="portfolio-item">
+                    <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Wedding 1">
+                    <div class="portfolio-overlay">
+                        <div>
+                            <h3>Анна и Михаил</h3>
+                            <p>Загородная свадьба в стиле Рустик</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="portfolio-item">
+                    <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Wedding 2">
+                    <div class="portfolio-overlay">
+                        <div>
+                            <h3>Елена и Денис</h3>
+                            <p>Классическая церемония во дворце</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="portfolio-item">
+                    <img src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Wedding 3">
+                    <div class="portfolio-overlay">
+                        <div>
+                            <h3>София и Артем</h3>
+                            <p>Минималистичная свадьба на крыше</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="portfolio.html" class="btn btn-outline">Посмотреть все работы</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="contact reveal">
+        <div class="container">
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h3>Давайте обсудим вашу свадьбу!</h3>
+                    <p>Мы верим, что каждая пара уникальна. Оставьте заявку, и мы свяжемся с вами в течение 24 часов, чтобы обсудить первые детали вашего торжества.</p>
+                    <p style="margin-top: 20px;"><strong>Email:</strong> <a href="mailto:planningwedding96@gmail.com" style="color: inherit; text-decoration: none;">planningwedding96@gmail.com</a></p>
+                    <p><strong>Телефон:</strong> +375 (44) 774-97-73</p>
+                </div>
+                <div class="contact-form">
+                    <form id="wedding-contact-form">
+                        <div class="form-group">
+                            <input type="text" name="name" placeholder="Ваше Имя" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" name="email" placeholder="Email" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea name="message" rows="5" placeholder="Расскажите о вашей свадьбе" required></textarea>
+                        </div>
+                        <button type="submit" class="btn">Отправить заявку</button>
+                    </form>
+                    <div id="form-status" style="display: none; margin-top: 20px; padding: 15px; border-radius: 5px; text-align: center;"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <a href="index.html" class="footer-logo">Eternal Moments</a>
+            <div class="social-links">
+                <a href="https://instagram.com" target="_blank">Instagram</a>
+                <a href="https://pinterest.com" target="_blank">Pinterest</a>
+                <a href="https://t.me/kidcrytoday" target="_blank">Telegram</a>
+            </div>
+            <p>&copy; 2026 Eternal Moments Wedding Planning. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('wedding-contact-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const form = e.target;
+            const statusDiv = document.getElementById('form-status');
+            const submitBtn = form.querySelector('button');
+            
+            const formData = new FormData(form);
+            const data = {};
+            formData.forEach((value, key) => data[key] = value);
+            
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'Отправка...';
+            
+            try {
+                 const response = await fetch('https://formspree.io/f/xqegogkb', {
+                     method: 'POST',
+                     headers: {
+                         'Accept': 'application/json',
+                         'Content-Type': 'application/json',
+                     },
+                     body: JSON.stringify(data)
+                 });
+                 
+                 if (response.ok) {
+                     statusDiv.style.display = 'block';
+                     statusDiv.style.backgroundColor = '#d4edda';
+                     statusDiv.style.color = '#155724';
+                     statusDiv.innerText = 'Спасибо! Ваша заявка успешно отправлена. Мы свяжемся с вами в ближайшее время.';
+                     form.reset();
+                 } else {
+                     throw new Error('Ошибка сервера');
+                 }
+            } catch (error) {
+                statusDiv.style.display = 'block';
+                statusDiv.style.backgroundColor = '#f8d7da';
+                statusDiv.style.color = '#721c24';
+                statusDiv.innerText = 'Произошла ошибка при отправке. Пожалуйста, попробуйте еще раз.';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'Отправить заявку';
+                
+                setTimeout(() => {
+                    statusDiv.style.display = 'none';
+                }, 5000);
+            }
+        });
+
+        // Lightbox Gallery
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = lightbox.querySelector('img');
+        const portfolioItems = document.querySelectorAll('.portfolio-item img');
+
+        portfolioItems.forEach(img => {
+            img.style.cursor = 'pointer';
+            img.addEventListener('click', () => {
+                lightboxImg.src = img.src;
+                lightbox.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            });
+        });
+
+        lightbox.addEventListener('click', () => {
+            lightbox.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        });
+
+        // Scroll Reveal
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealOnScroll = () => {
+            revealElements.forEach(el => {
+                const elementTop = el.getBoundingClientRect().top;
+                if (elementTop < window.innerHeight - 150) {
+                    el.classList.add('active');
+                }
+            });
+        };
+        window.addEventListener('scroll', revealOnScroll);
+        window.addEventListener('load', revealOnScroll);
+    </script>
+
+</body>
+</html>

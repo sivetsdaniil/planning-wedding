@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Наши Услуги - Eternal Moments Wedding Planning</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .service-detail-card {
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            margin-bottom: 40px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.04);
+        }
+
+        .service-detail-card:nth-child(even) {
+            direction: rtl;
+        }
+
+        .service-detail-card:nth-child(even) .service-content {
+            direction: ltr;
+        }
+
+        .service-img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 15px;
+        }
+
+        .service-content h3 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
+        .service-content ul {
+            list-style: none;
+            margin-top: 20px;
+        }
+
+        .service-content ul li {
+            margin-bottom: 12px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .service-content ul li::before {
+            content: '✦';
+            position: absolute;
+            left: 0;
+            color: var(--accent-color);
+        }
+
+        @media (max-width: 992px) {
+            .service-detail-card {
+                grid-template-columns: 1fr;
+                padding: 30px;
+            }
+            .service-detail-card:nth-child(even) {
+                direction: ltr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="container">
+            <a href="index.html" class="nav-logo">Eternal Moments</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="services.html" style="color: var(--primary-color);">Услуги</a></li>
+                <li><a href="portfolio.html">Портфолио</a></li>
+                <li><a href="index.html#contact">Контакты</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Наши Услуги</h1>
+            <p>Профессиональное планирование каждой детали вашего праздника</p>
+            <div class="divider" style="width: 100px; height: 2px; background: var(--accent-color); margin: 20px auto;"></div>
+        </div>
+    </header>
+
+    <section class="services-page">
+        <div class="container">
+            
+            <div class="service-detail-card reveal">
+                <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Full Planning" class="service-img">
+                <div class="service-content">
+                    <h3>Полная Организация</h3>
+                    <p>Мы сопровождаем вас с самого первого дня планирования до момента, когда последний гость покинет торжество. Эта услуга создана для тех, кто ценит свое время и хочет наслаждаться процессом подготовки без стресса.</p>
+                    <ul>
+                        <li>Подбор и бронирование идеальной площадки</li>
+                        <li>Разработка концепции и тайминга дня</li>
+                        <li>Управление бюджетом и финансовый контроль</li>
+                        <li>Подбор и координация всех подрядчиков</li>
+                        <li>Неограниченные консультации</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="service-detail-card reveal">
+                <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Decor" class="service-img">
+                <div class="service-content">
+                    <h3>Декор и Стилистика</h3>
+                    <p>Свадьба — это визуальная история вашей любви. Мы создаем неповторимую атмосферу, продумывая каждую деталь: от масштабных декораций до сервировки стола и полиграфии.</p>
+                    <ul>
+                        <li>Разработка визуальной концепции и мудборда</li>
+                        <li>Флористическое оформление зоны церемонии и зала</li>
+                        <li>Подбор текстиля, мебели и освещения</li>
+                        <li>Разработка и печать свадебной полиграфии</li>
+                        <li>Монтаж и демонтаж декораций в день свадьбы</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="service-detail-card reveal">
+                <img src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Coordination" class="service-img">
+                <div class="service-content">
+                    <h3>Координация Свадебного Дня</h3>
+                    <p>Если вы уже всё спланировали сами, но хотите в день свадьбы быть главными героями, а не менеджерами — эта услуга для вас. Мы берем на себя контроль за всеми процессами за 2 недели до даты.</p>
+                    <ul>
+                        <li>Стыковка всех подрядчиков накануне торжества</li>
+                        <li>Контроль тайминга и очередности программы</li>
+                        <li>Решение любых форс-мажорных ситуаций</li>
+                        <li>Встреча и рассадка гостей</li>
+                        <li>Контроль качества работы кухни и персонала</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 60px;">
+                <a href="index.html#contact" class="btn">Записаться на встречу</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <a href="index.html" class="footer-logo">Eternal Moments</a>
+            <div class="social-links">
+                <a href="https://instagram.com" target="_blank">Instagram</a>
+                <a href="https://pinterest.com" target="_blank">Pinterest</a>
+                <a href="https://t.me/kidcrytoday" target="_blank">Telegram</a>
+            </div>
+            <p>&copy; 2026 Eternal Moments Wedding Planning. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Scroll Reveal
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealOnScroll = () => {
+            revealElements.forEach(el => {
+                const elementTop = el.getBoundingClientRect().top;
+                if (elementTop < window.innerHeight - 100) {
+                    el.classList.add('active');
+                }
+            });
+        };
+        window.addEventListener('scroll', revealOnScroll);
+        window.addEventListener('load', revealOnScroll);
+    </script>
+</body>
+</html>
