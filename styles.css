@@ -757,6 +757,39 @@ footer {
     line-height: 1.6;
 }
 
+/* Star Rating Styles */
+.rating-group {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.rating-group input {
+    display: none;
+}
+
+.rating-group label {
+    font-size: 30px;
+    color: #ddd;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.rating-group label:hover,
+.rating-group label:hover ~ label,
+.rating-group input:checked ~ label {
+    color: var(--accent-color);
+}
+
+.rating-display {
+    color: var(--accent-color);
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+    display: block;
+}
+
 @media (max-width: 768px) {
     .menu-toggle {
         display: flex;
