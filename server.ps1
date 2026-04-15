@@ -4,8 +4,11 @@ $root = "d:\planning-wedding"
 $commentsFile = Join-Path $root "comments.json"
 $adminPassword = "admin" # Пароль для админ-панели
 
+# Используем UTF-8 без BOM для всех операций (стандарт для веба)
+$utf8 = New-Object System.Text.UTF8Encoding($false)
+
 if (-not (Test-Path $commentsFile)) {
-    "[]" | Out-File -FilePath $commentsFile -Encoding UTF8
+    [System.IO.File]::WriteAllText($commentsFile, "[]", $utf8)
 }
 
 $listener = New-Object System.Net.HttpListener
@@ -23,15 +26,15 @@ try {
 
         try {
             if ($request.HttpMethod -eq "GET" -and $request.Url.LocalPath -eq "/get-comments") {
-                $content = Get-Content -Path $commentsFile -Raw -Encoding UTF8
+                $content = [System.IO.File]::ReadAllText($commentsFile, $utf8)
                 if ([string]::IsNullOrWhiteSpace($content)) { $content = "[]" }
-                $bytes = [System.Text.Encoding]::UTF8.GetBytes($content)
+                $bytes = $utf8.GetBytes($content)
                 $response.ContentType = "application/json; charset=utf-8"
                 $response.ContentLength64 = $bytes.Length
                 $response.OutputStream.Write($bytes, 0, $bytes.Length)
             } 
             elseif ($request.HttpMethod -eq "POST" -and $request.Url.LocalPath -eq "/add-comment") {
-                $reader = New-Object System.IO.StreamReader($request.InputStream, [System.Text.Encoding]::UTF8)
+                $reader = New-Object System.IO.StreamReader($request.InputStream, $utf8)
                 $body = $reader.ReadToEnd()
                 $newComment = $body | ConvertFrom-Json
                 
@@ -39,32 +42,32 @@ try {
                 $newComment | Add-Member -MemberType NoteProperty -Name "date" -Value (Get-Date -Format "dd.MM.yyyy HH:mm")
                 $newComment | Add-Member -MemberType NoteProperty -Name "approved" -Value $false # По умолчанию требует одобрения
 
-                $commentsContent = Get-Content -Path $commentsFile -Raw -Encoding UTF8
+                $commentsContent = [System.IO.File]::ReadAllText($commentsFile, $utf8)
                 $comments = if ([string]::IsNullOrWhiteSpace($commentsContent)) { @() } else { $commentsContent | ConvertFrom-Json }
                 if ($null -eq $comments) { $comments = @() }
                 if ($comments -isnot [Array]) { $comments = @($comments) }
                 
                 $comments += $newComment
                 $json = @($comments) | ConvertTo-Json -Depth 10
-                $json | Out-File -FilePath $commentsFile -Encoding UTF8
+                [System.IO.File]::WriteAllText($commentsFile, $json, $utf8)
                 
                 $response.ContentType = "application/json"
-                $message = [System.Text.Encoding]::UTF8.GetBytes('{"status": "success"}')
+                $message = $utf8.GetBytes('{"status": "success"}')
                 $response.ContentLength64 = $message.Length
                 $response.OutputStream.Write($message, 0, $message.Length)
             }
             elseif ($request.HttpMethod -eq "POST" -and $request.Url.LocalPath -eq "/admin-action") {
-                $reader = New-Object System.IO.StreamReader($request.InputStream, [System.Text.Encoding]::UTF8)
+                $reader = New-Object System.IO.StreamReader($request.InputStream, $utf8)
                 $body = $reader.ReadToEnd()
                 $data = $body | ConvertFrom-Json
                 
                 if ($data.password -ne $adminPassword) {
                     $response.StatusCode = 403
-                    $message = [System.Text.Encoding]::UTF8.GetBytes('{"status": "error", "message": "Wrong password"}')
+                    $message = $utf8.GetBytes('{"status": "error", "message": "Wrong password"}')
                     $response.ContentLength64 = $message.Length
                     $response.OutputStream.Write($message, 0, $message.Length)
                 } else {
-                    $commentsContent = Get-Content -Path $commentsFile -Raw -Encoding UTF8
+                    $commentsContent = [System.IO.File]::ReadAllText($commentsFile, $utf8)
                     $comments = if ([string]::IsNullOrWhiteSpace($commentsContent)) { @() } else { $commentsContent | ConvertFrom-Json }
                     if ($null -eq $comments) { $comments = @() }
                     if ($comments -isnot [Array]) { $comments = @($comments) }
@@ -73,13 +76,30 @@ try {
                         foreach ($c in $comments) { if ($c.id -eq $data.id) { $c.approved = $true } }
                     } elseif ($data.action -eq "delete") {
                         $comments = $comments | Where-Object { $_.id -ne $data.id }
+                    } elseif ($data.action -eq "edit") {
+                        # Создаем новый массив с обновленным объектом
+                        $newComments = @()
+                        foreach ($c in $comments) {
+                            if ($c.id -eq $data.id) {
+                                # Создаем копию объекта с новыми значениями
+                                $updated = $c | Select-Object *
+                                $updated.name = $data.name
+                                $updated.message = $data.message
+                                # Если было поле text, тоже обновляем его
+                                if ($updated.PSObject.Properties['text']) { $updated.text = $data.message }
+                                $newComments += $updated
+                            } else {
+                                $newComments += $c
+                            }
+                        }
+                        $comments = $newComments
                     }
 
                     $json = @($comments) | ConvertTo-Json -Depth 10
-                    $json | Out-File -FilePath $commentsFile -Encoding UTF8
+                    [System.IO.File]::WriteAllText($commentsFile, $json, $utf8)
                     
                     $response.ContentType = "application/json"
-                    $message = [System.Text.Encoding]::UTF8.GetBytes('{"status": "success"}')
+                    $message = $utf8.GetBytes('{"status": "success"}')
                     $response.ContentLength64 = $message.Length
                     $response.OutputStream.Write($message, 0, $message.Length)
                 }

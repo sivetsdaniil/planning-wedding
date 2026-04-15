@@ -420,31 +420,30 @@
             submitBtn.innerText = 'Отправка...';
 
             try {
-                // 1. Отправляем на Formspree
-                const formspreePromise = fetch('https://formspree.io/f/xqegogkb', {
-                    method: 'POST',
-                    headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
-
-                // 2. Сохраняем локально на сервере
-                const serverPromise = fetch('/add-comment', {
+                // 1. Отправляем локально на сервер (это быстро)
+                const serverResponse = await fetch('/add-comment', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
                 });
 
-                const [fsResponse, srvResponse] = await Promise.all([formspreePromise, serverPromise]);
-
-                if (fsResponse.ok && srvResponse.ok) {
+                if (serverResponse.ok) {
+                    // Показываем успех сразу, не дожидаясь Formspree
                     commentStatus.style.display = 'block';
                     commentStatus.style.backgroundColor = '#d4edda';
                     commentStatus.style.color = '#155724';
                     commentStatus.innerText = 'Спасибо! Ваш отзыв отправлен на модерацию и скоро появится на сайте.';
                     commentForm.reset();
                     loadComments();
+
+                    // 2. Отправляем на Formspree в фоновом режиме (может быть долго)
+                    fetch('https://formspree.io/f/xqegogkb', {
+                        method: 'POST',
+                        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    }).catch(err => console.error('Background Formspree error:', err));
                 } else {
-                    throw new Error('Ошибка при отправке');
+                    throw new Error('Ошибка сервера');
                 }
             } catch (error) {
                 commentStatus.style.display = 'block';

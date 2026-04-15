@@ -18,9 +18,14 @@
         .status-approved { background: #d4edda; color: #155724; }
         .actions button { margin-left: 10px; padding: 5px 10px; border: none; border-radius: 3px; cursor: pointer; transition: 0.3s; }
         .btn-approve { background-color: #d4edda; color: #155724; }
+        .btn-edit { background-color: #e2e3e5; color: #383d41; }
         .btn-delete { background-color: #f8d7da; color: #721c24; }
+        .btn-save { background-color: #007bff; color: white; }
         .btn-approve:hover { background-color: #c3e6cb; }
+        .btn-edit:hover { background-color: #d6d8db; }
         .btn-delete:hover { background-color: #f5c6cb; }
+        .edit-fields { display: none; margin-top: 10px; flex-direction: column; gap: 10px; }
+        .edit-fields input, .edit-fields textarea { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-family: inherit; }
         .back-link { display: block; text-align: center; margin-top: 20px; color: #d4a373; text-decoration: none; }
     </style>
 </head>
@@ -43,8 +48,11 @@
     <script>
         const passwordInput = document.getElementById('admin-password');
         const commentsList = document.getElementById('admin-comments-list');
+        let isEditingAny = false; // Флаг, чтобы не обновлять список во время редактирования
 
         const loadAdminComments = async () => {
+            if (isEditingAny) return; // Не обновляем, если мы что-то правим
+
             try {
                 const response = await fetch(`/get-comments?t=${new Date().getTime()}`);
                 let comments = await response.json();
@@ -60,19 +68,30 @@
                 }
 
                 commentsList.innerHTML = comments.reverse().map(c => `
-                    <div class="comment-item">
+                    <div class="comment-item" id="comment-${c.id}">
                         <div class="comment-info">
-                            <strong>${c.name}</strong> 
-                            <span class="comment-status ${c.approved ? 'status-approved' : 'status-pending'}">
-                                ${c.approved ? 'Одобрен' : 'Ожидает'}
-                            </span>
-                            <br>
-                            <small>${c.date}</small>
-                            ${c.rating ? `<div style="color:#d4af37; margin-top:5px;">${'★'.repeat(c.rating)}${'☆'.repeat(5-c.rating)}</div>` : ''}
-                            <p style="margin: 5px 0;">${c.text || c.message}</p>
+                            <div class="view-mode" style="display: block;">
+                                <strong>${c.name}</strong> 
+                                <span class="comment-status ${c.approved ? 'status-approved' : 'status-pending'}">
+                                    ${c.approved ? 'Одобрен' : 'Ожидает'}
+                                </span>
+                                <br>
+                                <small>${c.date}</small>
+                                ${c.rating ? `<div style="color:#d4af37; margin-top:5px;">${'★'.repeat(c.rating)}${'☆'.repeat(5-c.rating)}</div>` : ''}
+                                <p class="message-text" style="margin: 5px 0;">${c.text || c.message}</p>
+                            </div>
+                            <div class="edit-fields" style="display: none;">
+                                <input type="text" class="edit-name" value="${c.name.replace(/"/g, '&quot;')}">
+                                <textarea class="edit-text" rows="3">${(c.text || c.message || '').replace(/"/g, '&quot;').replace(/\n/g, ' ')}</textarea>
+                                <div style="margin-top: 10px;">
+                                    <button class="btn-save" onclick="saveEdit('${c.id}')">Сохранить</button>
+                                    <button onclick="toggleEdit('${c.id}')">Отмена</button>
+                                </div>
+                            </div>
                         </div>
                         <div class="actions">
                             ${!c.approved ? `<button class="btn-approve" onclick="adminAction('${c.id}', 'approve')">Одобрить</button>` : ''}
+                            <button class="btn-edit" onclick="toggleEdit('${c.id}')">Ред.</button>
                             <button class="btn-delete" onclick="adminAction('${c.id}', 'delete')">Удалить</button>
                         </div>
                     </div>
@@ -80,7 +99,7 @@
             } catch (e) { console.error('Error loading comments', e); }
         };
 
-        async function adminAction(id, action) {
+        async function adminAction(id, action, extraData = {}) {
             const password = passwordInput.value;
             if (!password) { alert('Введите пароль!'); return; }
 
@@ -88,10 +107,11 @@
                 const response = await fetch('/admin-action', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id, action, password })
+                    body: JSON.stringify({ id, action, password, ...extraData })
                 });
 
                 if (response.ok) {
+                    isEditingAny = false; // Сбрасываем флаг после успешного действия
                     loadAdminComments();
                 } else {
                     const err = await response.json();
@@ -100,7 +120,66 @@
             } catch (e) { alert('Ошибка при выполнении действия'); }
         }
 
-        passwordInput.addEventListener('input', loadAdminComments);
+        function toggleEdit(id) {
+            const item = document.getElementById(`comment-${id}`);
+            const view = item.querySelector('.view-mode');
+            const edit = item.querySelector('.edit-fields');
+            
+            if (edit.style.display === 'none') {
+                // Включаем режим редактирования
+                edit.style.display = 'flex';
+                view.style.display = 'none';
+                isEditingAny = true; // Блокируем авто-обновление
+            } else {
+                // Выключаем
+                edit.style.display = 'none';
+                view.style.display = 'block';
+                isEditingAny = false; // Разрешаем авто-обновление
+            }
+        }
+
+        async function saveEdit(id) {
+            console.log('Attempting to save comment:', id);
+            const item = document.getElementById(`comment-${id}`);
+            const btn = item.querySelector('.btn-save');
+            const newName = item.querySelector('.edit-name').value;
+            const newMessage = item.querySelector('.edit-text').value;
+            
+            const originalText = btn.innerText;
+            btn.innerText = 'Сохранение...';
+            btn.disabled = true;
+
+            try {
+                const password = passwordInput.value;
+                if (!password) { alert('Введите пароль!'); return; }
+
+                const response = await fetch('/admin-action', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id, action: 'edit', password, name: newName, message: newMessage })
+                });
+
+                if (response.ok) {
+                    console.log('Save successful');
+                    isEditingAny = false;
+                    await loadAdminComments();
+                } else {
+                    const err = await response.json();
+                    alert('Ошибка: ' + (err.message || 'Доступ запрещен'));
+                }
+            } catch (e) { 
+                console.error('Save error:', e);
+                alert('Ошибка при сохранении'); 
+            } finally {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        passwordInput.addEventListener('input', () => {
+            isEditingAny = false; // Сброс при вводе пароля
+            loadAdminComments();
+        });
         
         // Автоматическое обновление каждые 3 секунды
         setInterval(loadAdminComments, 3000);
