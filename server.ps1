@@ -5,7 +5,7 @@ $commentsFile = Join-Path $root "comments.json"
 $adminPassword = "admin" # Пароль для админ-панели
 
 if (-not (Test-Path $commentsFile)) {
-    Set-Content -Path $commentsFile -Value "[]" -Encoding UTF8
+    "[]" | Out-File -FilePath $commentsFile -Encoding UTF8
 }
 
 $listener = New-Object System.Net.HttpListener
@@ -45,7 +45,6 @@ try {
                 if ($comments -isnot [Array]) { $comments = @($comments) }
                 
                 $comments += $newComment
-                # Принудительно сохраняем как массив и в UTF8
                 $json = @($comments) | ConvertTo-Json -Depth 10
                 $json | Out-File -FilePath $commentsFile -Encoding UTF8
                 
@@ -66,7 +65,8 @@ try {
                     $response.OutputStream.Write($message, 0, $message.Length)
                 } else {
                     $commentsContent = Get-Content -Path $commentsFile -Raw -Encoding UTF8
-                    $comments = $commentsContent | ConvertFrom-Json
+                    $comments = if ([string]::IsNullOrWhiteSpace($commentsContent)) { @() } else { $commentsContent | ConvertFrom-Json }
+                    if ($null -eq $comments) { $comments = @() }
                     if ($comments -isnot [Array]) { $comments = @($comments) }
 
                     if ($data.action -eq "approve") {

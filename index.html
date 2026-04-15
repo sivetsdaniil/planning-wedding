@@ -379,7 +379,8 @@
 
         const loadComments = async () => {
             try {
-                const response = await fetch('/get-comments');
+                // Добавляем случайный параметр для обхода кэша браузера
+                const response = await fetch(`/get-comments?t=${new Date().getTime()}`);
                 let comments = await response.json();
                 
                 // Принудительно превращаем в массив, если пришел один объект
@@ -456,9 +457,11 @@
                 setTimeout(() => { commentStatus.style.display = 'none'; }, 5000);
             }
         });
-
-        loadComments();
-    </script>
+ 
+         loadComments();
+          // Автоматически обновляем отзывы каждые 3 секунды
+          setInterval(loadComments, 3000);
+      </script>
 
 </body>
 </html>

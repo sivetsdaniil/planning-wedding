@@ -46,7 +46,7 @@
 
         const loadAdminComments = async () => {
             try {
-                const response = await fetch('/get-comments');
+                const response = await fetch(`/get-comments?t=${new Date().getTime()}`);
                 let comments = await response.json();
                 
                 // Принудительно превращаем в массив, если пришел один объект
@@ -101,6 +101,10 @@
         }
 
         passwordInput.addEventListener('input', loadAdminComments);
+        
+        // Автоматическое обновление каждые 3 секунды
+        setInterval(loadAdminComments, 3000);
+        
         loadAdminComments();
     </script>
 </body>
