@@ -26,6 +26,7 @@
                 <li><a href="#home">Главная</a></li>
                 <li><a href="#services">Услуги</a></li>
                 <li><a href="portfolio.html">Портфолио</a></li>
+                <li><a href="team.html">Команда</a></li>
                 <li><a href="pricing.html">Цены</a></li>
                 <li><a href="#calculator">Калькулятор</a></li>
                 <li><a href="#contact">Контакты</a></li>
@@ -125,6 +126,24 @@
                         <option value="standard">Стандарт (уютно и со вкусом)</option>
                         <option value="premium">Премиум (высокий уровень деталей)</option>
                         <option value="luxury">Лакшери (эксклюзивные решения)</option>
+                    </select>
+                </div>
+                <div class="calc-group">
+                    <label>Фотограф:</label>
+                    <select id="photographer" class="form-group" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">
+                        <option value="none">Не нужен</option>
+                        <option value="dmitry">Дмитрий Морозов (600 BYN)</option>
+                        <option value="alex" selected>Александр Волков (1200 BYN)</option>
+                        <option value="maria">Мария Соколова (2500 BYN)</option>
+                    </select>
+                    <small><a href="team.html" style="color: #d4a373;">Посмотреть портфолио фотографов</a></small>
+                </div>
+                <div class="calc-group">
+                    <label>Видеограф:</label>
+                    <select id="videographer" class="form-group" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">
+                        <option value="none">Не нужен</option>
+                        <option value="standard" selected>Стандарт (1000 BYN)</option>
+                        <option value="cinema">Кино-стиль (2200 BYN)</option>
                     </select>
                 </div>
                 <div class="calc-results">
@@ -314,6 +333,8 @@
         // Budget Calculator Logic
         const guestsInput = document.getElementById('guests');
         const levelSelect = document.getElementById('level');
+        const photoSelect = document.getElementById('photographer');
+        const videoSelect = document.getElementById('videographer');
         const guestsValDisplay = document.getElementById('guests-val');
         
         const resBanquet = document.getElementById('res-banquet');
@@ -324,25 +345,40 @@
         const calculate = () => {
             const guests = parseInt(guestsInput.value);
             const level = levelSelect.value;
+            const photoLevel = photoSelect.value;
+            const videoLevel = videoSelect.value;
             guestsValDisplay.innerText = guests;
 
+            // Базовые цены за банкет и декор
             let guestPrice = 120; // Standard
             let decorBase = 1500;
-            let mediaBase = 2000;
 
             if (level === 'premium') {
                 guestPrice = 200;
                 decorBase = 3500;
-                mediaBase = 4000;
             } else if (level === 'luxury') {
                 guestPrice = 450;
                 decorBase = 8000;
-                mediaBase = 7000;
             }
 
+            // Цены фотографов
+            const photoPrices = {
+                'none': 0,
+                'dmitry': 600,
+                'alex': 1200,
+                'maria': 2500
+            };
+
+            // Цены видеографов
+            const videoPrices = {
+                'none': 0,
+                'standard': 1000,
+                'cinema': 2200
+            };
+
             const banquet = guests * guestPrice;
-            const decor = decorBase + (guests * 20); // Scale decor with guest count
-            const media = mediaBase;
+            const decor = decorBase + (guests * 20); 
+            const media = photoPrices[photoLevel] + videoPrices[videoLevel];
             const total = banquet + decor + media;
 
             resBanquet.innerText = banquet.toLocaleString() + ' BYN';
@@ -353,6 +389,8 @@
 
         guestsInput.addEventListener('input', calculate);
         levelSelect.addEventListener('change', calculate);
+        photoSelect.addEventListener('change', calculate);
+        videoSelect.addEventListener('change', calculate);
         calculate(); // Initial run
 
         // Mobile Menu Toggle

@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Наша Команда - Eternal Moments</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* Принудительно 3 колонки слева направо */
+            gap: 30px;
+            margin-top: 60px;
+        }
+        .team-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+            text-align: center;
+            padding-bottom: 25px;
+            display: flex;
+            flex-direction: column;
+        }
+        .team-card:hover {
+            transform: translateY(-10px);
+        }
+        .team-img {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+        }
+        .team-info {
+            padding: 20px;
+            flex-grow: 1;
+        }
+        .team-info h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            color: #2c2c2c;
+        }
+        .team-role {
+            color: #d4a373;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.8rem;
+            margin-bottom: 12px;
+            display: block;
+        }
+        .team-price {
+            background: #faf9f7;
+            padding: 8px;
+            border-radius: 5px;
+            margin: 12px 0;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .portfolio-btn {
+            background: none;
+            border: 1.5px solid #d4a373;
+            color: #d4a373;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            align-self: center;
+            margin-top: auto;
+        }
+        .portfolio-btn:hover {
+            background: #d4a373;
+            color: white;
+        }
+        
+        /* Modal Styles */
+        .team-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .modal-content {
+            background: white;
+            max-width: 1000px;
+            width: 95%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border-radius: 15px;
+            padding: 40px 30px 30px;
+            position: relative;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .close-modal {
+            position: absolute;
+            top: 10px; right: 20px;
+            font-size: 2.2rem;
+            cursor: pointer;
+            color: #333;
+            line-height: 1;
+            z-index: 10;
+        }
+        .work-samples {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 25px;
+        }
+        .work-samples img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+        .work-samples img:hover {
+            transform: scale(1.02);
+        }
+        @media (max-width: 992px) {
+            .team-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 768px) {
+            .work-samples {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 600px) {
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+            .work-samples {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="container">
+            <a href="index.html" class="nav-logo">Eternal Moments</a>
+            <div class="menu-toggle" id="mobile-menu">
+                <span></span><span></span><span></span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html#home">Главная</a></li>
+                <li><a href="index.html#services">Услуги</a></li>
+                <li><a href="portfolio.html">Портфолио</a></li>
+                <li><a href="team.html" class="active">Команда</a></li>
+                <li><a href="pricing.html">Цены</a></li>
+                <li><a href="index.html#calculator">Калькулятор</a></li>
+                <li><a href="index.html#contact">Контакты</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="page-header" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1520854221256-17451cc331bf?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; height: 400px; display: flex; align-items: center; justify-content: center; color: white; text-align: center;">
+        <div class="container">
+            <h1 style="font-family: 'Playfair Display', serif; font-size: 3.5rem; margin-bottom: 20px; text-shadow: 2px 2px 10px rgba(0,0,0,0.3); color: #ffffff;">Наши Профессионалы</h1>
+            <p style="font-size: 1.2rem; max-width: 600px; margin: 0 auto; text-shadow: 1px 1px 5px rgba(0,0,0,0.3);">Люди, которые сделают ваш день незабываемым</p>
+        </div>
+    </header>
+
+    <section class="reveal active" style="padding: 100px 0;">
+        <div class="container">
+            <div class="section-title">
+                <h2>Фотографы</h2>
+                <div class="divider"></div>
+            </div>
+            
+            <div class="team-grid">
+                <!-- Photographer 1 -->
+                <div class="team-card">
+                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Мария Соколова" class="team-img">
+                    <div class="team-info">
+                        <span class="team-role">Топ-фотограф</span>
+                        <h3>Мария Соколова</h3>
+                        <p>Мастер художественной съемки с опытом более 10 лет. Её работы украшают обложки журналов.</p>
+                        <div class="team-price">Стоимость: от 2500 BYN</div>
+                        <button class="portfolio-btn" onclick="openPortfolio('maria')">Примеры работ</button>
+                    </div>
+                </div>
+
+                <!-- Photographer 2 -->
+                <div class="team-card">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Александр Волков" class="team-img">
+                    <div class="team-info">
+                        <span class="team-role">Профессионал</span>
+                        <h3>Александр Волков</h3>
+                        <p>Специалист по репортажной съемке. Умеет ловить самые искренние и живые эмоции.</p>
+                        <div class="team-price">Стоимость: от 1200 BYN</div>
+                        <button class="portfolio-btn" onclick="openPortfolio('alex')">Примеры работ</button>
+                    </div>
+                </div>
+
+                <!-- Photographer 3 -->
+                <div class="team-card">
+                    <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Дмитрий Морозов" class="team-img">
+                    <div class="team-info">
+                        <span class="team-role">Начинающий талант</span>
+                        <h3>Дмитрий Морозов</h3>
+                        <p>Молодой и креативный взгляд. Предлагает стильные и современные решения по доступной цене.</p>
+                        <div class="team-price">Стоимость: от 600 BYN</div>
+                        <button class="portfolio-btn" onclick="openPortfolio('dmitry')">Примеры работ</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modals for Portfolios -->
+    <div id="maria-modal" class="team-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('maria')">&times;</span>
+            <h2 style="font-family: 'Playfair Display', serif; margin-bottom: 10px;">Портфолио: Мария Соколова</h2>
+            <p style="color: #666; margin-bottom: 20px;">Художественная эстетика и высокая мода в свадебной фотографии.</p>
+            <div class="work-samples">
+                <img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80" alt="Work 1">
+                <img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=800&q=80" alt="Work 2">
+                <img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?auto=format&fit=crop&w=800&q=80" alt="Work 3">
+                <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=800&q=80" alt="Work 4">
+                <img src="https://images.unsplash.com/photo-1532712938310-34cb3982ef74?auto=format&fit=crop&w=800&q=80" alt="Work 5">
+                <img src="https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=800&q=80" alt="Work 6">
+            </div>
+        </div>
+    </div>
+
+    <div id="alex-modal" class="team-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('alex')">&times;</span>
+            <h2 style="font-family: 'Playfair Display', serif; margin-bottom: 10px;">Портфолио: Александр Волков</h2>
+            <p style="color: #666; margin-bottom: 20px;">Эмоции в каждом кадре. Репортаж, который рассказывает вашу историю.</p>
+            <div class="work-samples">
+                <img src="https://images.unsplash.com/photo-1532712938310-34cb3982ef74?auto=format&fit=crop&w=800&q=80" alt="Work 1">
+                <img src="https://images.unsplash.com/photo-1510076857177-7470076d4098?auto=format&fit=crop&w=800&q=80" alt="Work 2">
+                <img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=800&q=80" alt="Work 3">
+                <img src="https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=800&q=80" alt="Work 4">
+                <img src="https://images.unsplash.com/photo-1505932794465-147d1f1b2c97?auto=format&fit=crop&w=800&q=80" alt="Work 5">
+                <img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80" alt="Work 6">
+            </div>
+        </div>
+    </div>
+
+    <div id="dmitry-modal" class="team-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('dmitry')">&times;</span>
+            <h2 style="font-family: 'Playfair Display', serif; margin-bottom: 10px;">Портфолио: Дмитрий Морозов</h2>
+            <p style="color: #666; margin-bottom: 20px;">Стильные кадры и современные тренды свадебной фотографии.</p>
+            <div class="work-samples">
+                <img src="https://images.unsplash.com/photo-1537633552985-df8429e8048b?auto=format&fit=crop&w=800&q=80" alt="Work 1">
+                <img src="https://images.unsplash.com/photo-1525253013412-55c1a69a5738?auto=format&fit=crop&w=800&q=80" alt="Work 2">
+                <img src="https://images.unsplash.com/photo-1510076857177-7470076d4098?auto=format&fit=crop&w=800&q=80" alt="Work 3">
+                <img src="https://images.unsplash.com/photo-1523438885200-e635ba2c371e?auto=format&fit=crop&w=800&q=80" alt="Work 4">
+                <img src="https://images.unsplash.com/photo-1507504031003-b417219a0fde?auto=format&fit=crop&w=800&q=80" alt="Work 5">
+                <img src="https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&w=800&q=80" alt="Work 6">
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Eternal Moments Wedding Planning. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <script>
+        function openPortfolio(id) {
+            document.getElementById(id + '-modal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(id) {
+            document.getElementById(id + '-modal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close on background click
+        window.onclick = function(event) {
+            if (event.target.classList.contains('team-modal')) {
+                event.target.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        }
+    </script>
+</body>
+</html>
