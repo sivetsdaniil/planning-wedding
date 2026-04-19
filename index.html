@@ -142,9 +142,11 @@
                     <label>Видеограф:</label>
                     <select id="videographer" class="form-group" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">
                         <option value="none">Не нужен</option>
-                        <option value="standard" selected>Стандарт (1000 BYN)</option>
-                        <option value="cinema">Кино-стиль (2200 BYN)</option>
+                        <option value="max">Максим Орлов (700 BYN)</option>
+                        <option value="denis" selected>Денис Соловьев (1000 BYN)</option>
+                        <option value="artem">Артем Козлов (2200 BYN)</option>
                     </select>
+                    <small><a href="team.html" style="color: #d4a373;">Посмотреть портфолио видеографов</a></small>
                 </div>
                 <div class="calc-results">
                     <div class="result-item">
@@ -372,8 +374,9 @@
             // Цены видеографов
             const videoPrices = {
                 'none': 0,
-                'standard': 1000,
-                'cinema': 2200
+                'max': 700,
+                'denis': 1000,
+                'artem': 2200
             };
 
             const banquet = guests * guestPrice;

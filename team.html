@@ -215,6 +215,49 @@
                     </div>
                 </div>
             </div>
+
+            <div class="section-title" style="margin-top: 80px;">
+                <h2>Видеографы</h2>
+                <div class="divider"></div>
+            </div>
+
+            <div class="team-grid">
+                <!-- Videographer 1 -->
+                <div class="team-card">
+                    <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Артем Козлов" class="team-img">
+                    <div class="team-info">
+                        <span class="team-role">Топ-видеограф</span>
+                        <h3>Артем Козлов</h3>
+                        <p>Создает настоящие свадебные фильмы. Кинематографичный стиль и внимание к деталям.</p>
+                        <div class="team-price">Стоимость: от 2200 BYN</div>
+                        <button class="portfolio-btn" onclick="openPortfolio('artem')">Примеры работ</button>
+                    </div>
+                </div>
+
+                <!-- Videographer 2 -->
+                <div class="team-card">
+                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Денис Соловьев" class="team-img">
+                    <div class="team-info">
+                        <span class="team-role">Профессионал</span>
+                        <h3>Денис Соловьев</h3>
+                        <p>Мастер динамичного монтажа и качественного звука. Ваше видео будет смотреться на одном дыхании.</p>
+                        <div class="team-price">Стоимость: от 1000 BYN</div>
+                        <button class="portfolio-btn" onclick="openPortfolio('denis')">Примеры работ</button>
+                    </div>
+                </div>
+
+                <!-- Videographer 3 -->
+                <div class="team-card">
+                    <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Максим Орлов" class="team-img">
+                    <div class="team-info">
+                        <span class="team-role">Начинающий талант</span>
+                        <h3>Максим Орлов</h3>
+                        <p>Свежий взгляд на свадебное видео. Быстрый монтаж SDE и современные тренды.</p>
+                        <div class="team-price">Стоимость: от 700 BYN</div>
+                        <button class="portfolio-btn" onclick="openPortfolio('max')">Примеры работ</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -263,6 +306,55 @@
                 <img src="https://images.unsplash.com/photo-1523438885200-e635ba2c371e?auto=format&fit=crop&w=800&q=80" alt="Work 4">
                 <img src="https://images.unsplash.com/photo-1507504031003-b417219a0fde?auto=format&fit=crop&w=800&q=80" alt="Work 5">
                 <img src="https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&w=800&q=80" alt="Work 6">
+            </div>
+        </div>
+    </div>
+
+    <!-- Videographer Modals -->
+    <div id="artem-modal" class="team-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('artem')">&times;</span>
+            <h2 style="font-family: 'Playfair Display', serif; margin-bottom: 10px;">Портфолио: Артем Козлов</h2>
+            <p style="color: #666; margin-bottom: 20px;">Кинематографические свадебные фильмы высокого качества.</p>
+            <div class="work-samples">
+                <img src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=800&q=80" alt="Video Work 1">
+                <img src="https://images.unsplash.com/photo-1512101176959-c557f3516787?auto=format&fit=crop&w=800&q=80" alt="Video Work 2">
+                <img src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&w=800&q=80" alt="Video Work 3">
+                <img src="https://images.unsplash.com/photo-1478720568477-152d9b164e26?auto=format&fit=crop&w=800&q=80" alt="Video Work 4">
+                <img src="https://images.unsplash.com/photo-1518133835878-5a93cc3f89e5?auto=format&fit=crop&w=800&q=80" alt="Video Work 5">
+                <img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?auto=format&fit=crop&w=800&q=80" alt="Video Work 6">
+            </div>
+        </div>
+    </div>
+
+    <div id="denis-modal" class="team-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('denis')">&times;</span>
+            <h2 style="font-family: 'Playfair Display', serif; margin-bottom: 10px;">Портфолио: Денис Соловьев</h2>
+            <p style="color: #666; margin-bottom: 20px;">Динамичные и яркие свадебные ролики.</p>
+            <div class="work-samples">
+                <img src="https://images.unsplash.com/photo-1478720568477-152d9b164e26?auto=format&fit=crop&w=800&q=80" alt="Video Work 1">
+                <img src="https://images.unsplash.com/photo-1518133835878-5a93cc3f89e5?auto=format&fit=crop&w=800&q=80" alt="Video Work 2">
+                <img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?auto=format&fit=crop&w=800&q=80" alt="Video Work 3">
+                <img src="https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&w=800&q=80" alt="Video Work 4">
+                <img src="https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=800&q=80" alt="Video Work 5">
+                <img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80" alt="Video Work 6">
+            </div>
+        </div>
+    </div>
+
+    <div id="max-modal" class="team-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('max')">&times;</span>
+            <h2 style="font-family: 'Playfair Display', serif; margin-bottom: 10px;">Портфолио: Максим Орлов</h2>
+            <p style="color: #666; margin-bottom: 20px;">Современный подход и быстрый результат.</p>
+            <div class="work-samples">
+                <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=800&q=80" alt="Video Work 1">
+                <img src="https://images.unsplash.com/photo-1533106497176-45ae19e68ba2?auto=format&fit=crop&w=800&q=80" alt="Video Work 2">
+                <img src="https://images.unsplash.com/photo-1505236858219-8359eb29e329?auto=format&fit=crop&w=800&q=80" alt="Video Work 3">
+                <img src="https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=800&q=80" alt="Video Work 4">
+                <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=800&q=80" alt="Video Work 5">
+                <img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=800&q=80" alt="Video Work 6">
             </div>
         </div>
     </div>
