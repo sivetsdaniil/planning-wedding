@@ -1,3 +1,7 @@
+html {
+  scroll-behavior: smooth;
+}
+
 :root {
     --primary-color: #b76e79; /* Rose Gold */
     --secondary-color: #f7e7ce; /* Champagne */
@@ -826,4 +830,9 @@ footer {
     .contact-content { grid-template-columns: 1fr; }
     .nav-links { display: none; }
     .portfolio-grid { grid-template-columns: 1fr; }
+}
+
+.nav-links a.active {
+  color: #c9a96e;
+  border-bottom: 2px solid #c9a96e;
 }

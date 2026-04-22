@@ -6,6 +6,10 @@
     <title>Wedding Planning - Создаем свадьбу вашей мечты</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <style>
+        .nav-external:hover { opacity: 1; }
+        .nav-divider { color: rgba(255,255,255,0.25); pointer-events: none; padding: 0 4px; }
+    </style>
 </head>
 <body>
 
@@ -25,11 +29,12 @@
             <ul class="nav-links">
                 <li><a href="#home">Главная</a></li>
                 <li><a href="#services">Услуги</a></li>
-                <li><a href="portfolio.html">Портфолио</a></li>
-                <li><a href="team.html">Команда</a></li>
-                <li><a href="pricing.html">Цены</a></li>
                 <li><a href="#calculator">Калькулятор</a></li>
                 <li><a href="#contact">Контакты</a></li>
+                <li class="nav-divider">|</li>
+                <li><a href="portfolio.html" class="nav-external">Портфолио</a></li>
+                <li><a href="team.html" class="nav-external">Команда</a></li>
+                <li><a href="pricing.html" class="nav-external">Цены</a></li>
             </ul>
         </div>
     </nav>
@@ -318,7 +323,24 @@
             lightbox.style.display = 'none';
             document.body.style.overflow = 'auto';
         });
+        
+const sections = document.querySelectorAll('section[id]');
+const allNavLinks = document.querySelectorAll('.nav-links a');
 
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(section => {
+    if (window.scrollY >= section.offsetTop - 100) {
+      current = section.getAttribute('id');
+    }
+  });
+  allNavLinks.forEach(link => {
+    link.classList.remove('active');
+    if (link.getAttribute('href') === '#' + current) {
+      link.classList.add('active');
+    }
+  });
+});
         // Scroll Reveal
         const revealElements = document.querySelectorAll('.reveal');
         const revealOnScroll = () => {
