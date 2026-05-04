@@ -857,3 +857,10 @@ footer {
     opacity: 1;
     visibility: visible;
 }
+.nav-btn {
+    background: #c9a96e;
+    color: white !important;
+    padding: 8px 18px;
+    border-radius: 20px;
+}
+.nav-btn:hover { background: #b8935a; }

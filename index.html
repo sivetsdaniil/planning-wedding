@@ -58,6 +58,9 @@
                 <li><a href="portfolio.html" class="nav-external">Портфолио</a></li>
                 <li><a href="team.html" class="nav-external">Команда</a></li>
                 <li><a href="pricing.html" class="nav-external">Цены</a></li>
+                <li id="auth-nav">
+                    <a href="auth.html" class="nav-btn">Войти</a>
+                </li>
             </ul>
         </div>
     </nav>
@@ -549,6 +552,19 @@ window.addEventListener('scroll', () => {
       </script>
 <button id="back-to-top">↑</button>
 <script>
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (user) {
+        document.getElementById('auth-nav').innerHTML = `
+            <span style="color:#c9a96e; font-weight:500;">👤 ${user.name}</span>
+            <a href="#" onclick="logout()" style="color:#999; font-size:13px; margin-left:10px;">Выйти</a>
+        `;
+    }
+
+    function logout() {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.reload();
+    }
     const backToTop = document.getElementById('back-to-top');
     window.addEventListener('scroll', () => {
         if (window.scrollY > 400) {

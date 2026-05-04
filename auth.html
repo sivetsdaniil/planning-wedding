@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход / Регистрация</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1519741497674-611481863552?w=1600') center/cover;
+        }
+        .auth-box {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 420px;
+        }
+        .auth-box h2 {
+            text-align: center;
+            margin-bottom: 24px;
+            color: #333;
+            font-family: 'Playfair Display', serif;
+        }
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 24px;
+            border-bottom: 2px solid #eee;
+        }
+        .auth-tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            color: #999;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .auth-tab.active {
+            color: #c9a96e;
+            border-bottom: 2px solid #c9a96e;
+            margin-bottom: -2px;
+        }
+        .auth-form { display: none; }
+        .auth-form.active { display: block; }
+        .auth-form input {
+            width: 100%;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        .auth-form input:focus {
+            outline: none;
+            border-color: #c9a96e;
+        }
+        .auth-form button {
+            width: 100%;
+            padding: 14px;
+            background: #c9a96e;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .auth-form button:hover { background: #b8935a; }
+        .auth-message {
+            text-align: center;
+            margin-top: 12px;
+            font-size: 14px;
+            color: red;
+        }
+        .auth-message.success { color: green; }
+    </style>
+</head>
+<body>
+<div class="auth-container">
+    <div class="auth-box">
+        <h2>Личный кабинет</h2>
+        <div class="auth-tabs">
+            <div class="auth-tab active" onclick="switchTab('login')">Вход</div>
+            <div class="auth-tab" onclick="switchTab('register')">Регистрация</div>
+        </div>
+
+        <!-- Вход -->
+        <div class="auth-form active" id="login">
+            <input type="email" id="login-email" placeholder="Email">
+            <input type="password" id="login-password" placeholder="Пароль">
+            <button onclick="login()">Войти</button>
+            <div class="auth-message" id="login-message"></div>
+        </div>
+
+        <!-- Регистрация -->
+        <div class="auth-form" id="register">
+            <input type="text" id="reg-name" placeholder="Ваше имя">
+            <input type="email" id="reg-email" placeholder="Email">
+            <input type="password" id="reg-password" placeholder="Пароль">
+            <button onclick="register()">Зарегистрироваться</button>
+            <div class="auth-message" id="register-message"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const API = 'http://localhost:3000/api';
+
+    function switchTab(tab) {
+        document.querySelectorAll('.auth-tab').forEach((t, i) => {
+            t.classList.toggle('active', (tab === 'login' && i === 0) || (tab === 'register' && i === 1));
+        });
+        document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+        document.getElementById(tab).classList.add('active');
+    }
+
+    async function login() {
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+        const msg = document.getElementById('login-message');
+
+        const res = await fetch(`${API}/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+
+        if (data.token) {
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            msg.className = 'auth-message success';
+            msg.textContent = 'Успешно! Перенаправляем...';
+            setTimeout(() => window.location.href = 'index.html', 1000);
+        } else {
+            msg.textContent = data.error;
+        }
+    }
+
+    async function register() {
+        const name = document.getElementById('reg-name').value;
+        const email = document.getElementById('reg-email').value;
+        const password = document.getElementById('reg-password').value;
+        const msg = document.getElementById('register-message');
+
+        const res = await fetch(`${API}/auth/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, password })
+        });
+        const data = await res.json();
+
+        if (data.token) {
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            msg.className = 'auth-message success';
+            msg.textContent = 'Аккаунт создан! Перенаправляем...';
+            setTimeout(() => window.location.href = 'index.html', 1000);
+        } else {
+            msg.textContent = data.error;
+        }
+    }
+</script>
+</body>
+</html>
