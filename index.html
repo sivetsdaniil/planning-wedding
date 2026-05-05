@@ -7,29 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <style>
-        #back-to-top {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 45px;
-            height: 45px;
-            background: #c9a96e;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            font-size: 20px;
-            cursor: pointer;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s;
-            z-index: 9999;
-        }
-        #back-to-top.visible {
-            opacity: 1;
-            visibility: visible;
-        }
-    </style>
-    <style>
         .nav-external:hover { opacity: 1; }
         .nav-divider { color: rgba(255,255,255,0.25); pointer-events: none; padding: 0 4px; }
     </style>
@@ -58,9 +35,6 @@
                 <li><a href="portfolio.html" class="nav-external">Портфолио</a></li>
                 <li><a href="team.html" class="nav-external">Команда</a></li>
                 <li><a href="pricing.html" class="nav-external">Цены</a></li>
-                <li id="auth-nav">
-                    <a href="auth.html" class="nav-btn">Войти</a>
-                </li>
             </ul>
         </div>
     </nav>
@@ -509,28 +483,29 @@ window.addEventListener('scroll', () => {
             submitBtn.innerText = 'Отправка...';
 
             try {
-                // 1. Отправляем локально на сервер (это быстро)
-                const serverResponse = await fetch('/add-comment', {
+                const token = localStorage.getItem('token');
+                const serverResponse = await fetch('/api/auth/review', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
                     body: JSON.stringify(data)
                 });
 
                 if (serverResponse.ok) {
-                    // Показываем успех сразу, не дожидаясь Formspree
                     commentStatus.style.display = 'block';
                     commentStatus.style.backgroundColor = '#d4edda';
                     commentStatus.style.color = '#155724';
-                    commentStatus.innerText = 'Спасибо! Ваш отзыв отправлен на модерацию и скоро появится на сайте.';
+                    commentStatus.innerText = 'Спасибо! Ваш отзыв отправлен.';
                     commentForm.reset();
                     loadComments();
 
-                    // 2. Отправляем на Formspree в фоновом режиме (может быть долго)
                     fetch('https://formspree.io/f/xqegogkb', {
                         method: 'POST',
                         headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
                         body: JSON.stringify(data)
-                    }).catch(err => console.error('Background Formspree error:', err));
+                    }).catch(err => console.error('Formspree error:', err));
                 } else {
                     throw new Error('Ошибка сервера');
                 }
@@ -538,44 +513,28 @@ window.addEventListener('scroll', () => {
                 commentStatus.style.display = 'block';
                 commentStatus.style.backgroundColor = '#f8d7da';
                 commentStatus.style.color = '#721c24';
-                commentStatus.innerText = 'Произошла ошибка при отправке. Пожалуйста, попробуйте еще раз.';
+                commentStatus.innerText = 'Произошла ошибка. Попробуйте еще раз.';
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerText = 'Отправить отзыв';
                 setTimeout(() => { commentStatus.style.display = 'none'; }, 5000);
             }
         });
- 
          loadComments();
           // Автоматически обновляем отзывы каждые 3 секунды
           setInterval(loadComments, 3000);
+          const backToTop = document.getElementById('back-to-top');
+          window.addEventListener('scroll', () => {
+            if (window.scrollY > 400) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        });
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
       </script>
 <button id="back-to-top">↑</button>
-<script>
-    const user = JSON.parse(localStorage.getItem('user'));
-    if (user) {
-        document.getElementById('auth-nav').innerHTML = `
-            <span style="color:#c9a96e; font-weight:500;">👤 ${user.name}</span>
-            <a href="#" onclick="logout()" style="color:#999; font-size:13px; margin-left:10px;">Выйти</a>
-        `;
-    }
-
-    function logout() {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        window.location.reload();
-    }
-    const backToTop = document.getElementById('back-to-top');
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 400) {
-            backToTop.classList.add('visible');
-        } else {
-            backToTop.classList.remove('visible');
-        }
-    });
-    backToTop.addEventListener('click', () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-</script>
 </body>
 </html>

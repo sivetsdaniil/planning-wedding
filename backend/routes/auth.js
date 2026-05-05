@@ -11,6 +11,9 @@ const pool = new Pool({
     port: process.env.DB_PORT,
     database: process.env.DB_NAME,
 });
+    pool.on('connect', client => {
+    client.query("SET client_encoding TO 'UTF8'");
+    });
 
 // Регистрация
 router.post('/register', async (req, res) => {
@@ -42,6 +45,66 @@ router.post('/login', async (req, res) => {
 
         const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '24h' });
         res.json({ token, user: { id: user.id, name: user.name, email: user.email } });
+    } catch (err) {
+        res.status(500).json({ error: 'Ошибка сервера' });
+    }
+});
+
+// Создание заявки
+router.post('/request', async (req, res) => {
+    const { name, email, message } = req.body;
+    const token = req.headers.authorization?.split(' ')[1];
+    
+    let user_id = null;
+    if (token) {
+        try {
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            user_id = decoded.id;
+        } catch(e) {}
+    }
+
+    try {
+        await pool.query(
+            'INSERT INTO requests (user_id, message, status) VALUES ($1, $2, $3)',
+            [user_id, `Имя: ${name}, Email: ${email}, Сообщение: ${message}`, 'новая']
+        );
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: 'Ошибка сервера' });
+    }
+});
+
+// Добавить отзыв
+router.post('/review', async (req, res) => {
+    const { name, message, rating } = req.body;
+    const token = req.headers.authorization?.split(' ')[1];
+
+    let user_id = null;
+    if (token) {
+        try {
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            user_id = decoded.id;
+        } catch (e) { }
+    }
+
+    try {
+        await pool.query(
+            'INSERT INTO reviews (user_id, text, rating) VALUES ($1, $2, $3)',
+            [user_id, message, parseInt(rating)]
+        );
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: 'Ошибка сервера' });
+    }
+});
+
+// Получить отзывы
+router.get('/reviews', async (req, res) => {
+    try {
+        const result = await pool.query(
+            'SELECT reviews.*, users.name FROM reviews LEFT JOIN users ON reviews.user_id = users.id ORDER BY reviews.created_at DESC'
+        );
+        res.json(result.rows);
     } catch (err) {
         res.status(500).json({ error: 'Ошибка сервера' });
     }
