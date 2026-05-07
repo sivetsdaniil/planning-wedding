@@ -1,16 +1,27 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wedding Planning - Создаем свадьбу вашей мечты</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;600&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <style>
-        .nav-external:hover { opacity: 1; }
-        .nav-divider { color: rgba(255,255,255,0.25); pointer-events: none; padding: 0 4px; }
+        .nav-external:hover {
+            opacity: 1;
+        }
+
+        .nav-divider {
+            color: rgba(255, 255, 255, 0.25);
+            pointer-events: none;
+            padding: 0 4px;
+        }
     </style>
 </head>
+
 <body>
 
     <div id="lightbox" class="lightbox">
@@ -35,6 +46,7 @@
                 <li><a href="portfolio.html" class="nav-external">Портфолио</a></li>
                 <li><a href="team.html" class="nav-external">Команда</a></li>
                 <li><a href="pricing.html" class="nav-external">Цены</a></li>
+                <li><a id="auth-entry-link" href="auth.html" class="nav-external">Вход / Регистрация</a></li>
             </ul>
         </div>
     </nav>
@@ -64,7 +76,8 @@
                 </div>
                 <div class="service-card">
                     <h3>Координация дня</h3>
-                    <p>Вы наслаждаетесь праздником, а мы следим за тем, чтобы всё шло по плану до мельчайших деталей.</p>
+                    <p>Вы наслаждаетесь праздником, а мы следим за тем, чтобы всё шло по плану до мельчайших деталей.
+                    </p>
                 </div>
             </div>
             <div style="text-align: center; margin-top: 40px;">
@@ -81,7 +94,8 @@
             </div>
             <div class="portfolio-grid">
                 <div class="portfolio-item">
-                    <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Wedding 1">
+                    <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                        alt="Wedding 1">
                     <div class="portfolio-overlay">
                         <div>
                             <h3>Анна и Михаил</h3>
@@ -90,7 +104,8 @@
                     </div>
                 </div>
                 <div class="portfolio-item">
-                    <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Wedding 2">
+                    <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                        alt="Wedding 2">
                     <div class="portfolio-overlay">
                         <div>
                             <h3>Елена и Денис</h3>
@@ -99,7 +114,8 @@
                     </div>
                 </div>
                 <div class="portfolio-item">
-                    <img src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Wedding 3">
+                    <img src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                        alt="Wedding 3">
                     <div class="portfolio-overlay">
                         <div>
                             <h3>София и Артем</h3>
@@ -127,7 +143,8 @@
                 </div>
                 <div class="calc-group">
                     <label>Уровень сервиса:</label>
-                    <select id="level" class="form-group" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">
+                    <select id="level" class="form-group"
+                        style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">
                         <option value="standard">Стандарт (уютно и со вкусом)</option>
                         <option value="premium">Премиум (высокий уровень деталей)</option>
                         <option value="luxury">Лакшери (эксклюзивные решения)</option>
@@ -135,7 +152,8 @@
                 </div>
                 <div class="calc-group">
                     <label>Фотограф:</label>
-                    <select id="photographer" class="form-group" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">
+                    <select id="photographer" class="form-group"
+                        style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">
                         <option value="none">Не нужен</option>
                         <option value="dmitry">Дмитрий Морозов (600 BYN)</option>
                         <option value="alex" selected>Александр Волков (1200 BYN)</option>
@@ -145,7 +163,8 @@
                 </div>
                 <div class="calc-group">
                     <label>Видеограф:</label>
-                    <select id="videographer" class="form-group" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">
+                    <select id="videographer" class="form-group"
+                        style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">
                         <option value="none">Не нужен</option>
                         <option value="max">Максим Орлов (700 BYN)</option>
                         <option value="denis" selected>Денис Соловьев (1000 BYN)</option>
@@ -170,7 +189,8 @@
                         <span>Ориентировочный итог:</span>
                         <span id="res-total">0 BYN</span>
                     </div>
-                    <p class="calc-disclaimer">*Расчет является предварительным и зависит от конкретных пожеланий и даты.</p>
+                    <p class="calc-disclaimer">*Расчет является предварительным и зависит от конкретных пожеланий и
+                        даты.</p>
                 </div>
             </div>
         </div>
@@ -183,7 +203,7 @@
                     <h3>Отзывы наших пар</h3>
                     <p>Поделитесь вашими впечатлениями о нашей работе</p>
                 </div>
-                
+
                 <div class="comment-form">
                     <form id="comment-form">
                         <div class="form-group">
@@ -198,11 +218,14 @@
                             <span style="margin-right: 15px; font-weight: 600;">Оценка:</span>
                         </div>
                         <div class="form-group">
-                            <textarea name="message" id="comment-text" rows="3" placeholder="Ваш отзыв или пожелание" required></textarea>
+                            <textarea name="message" id="comment-text" rows="3" placeholder="Ваш отзыв или пожелание"
+                                required></textarea>
                         </div>
                         <button type="submit" class="btn">Отправить отзыв</button>
                     </form>
-                    <div id="comment-status" style="display: none; margin-top: 20px; padding: 15px; border-radius: 5px; text-align: center;"></div>
+                    <div id="comment-status"
+                        style="display: none; margin-top: 20px; padding: 15px; border-radius: 5px; text-align: center;">
+                    </div>
                 </div>
 
                 <div id="comments-list" class="comments-list">
@@ -219,8 +242,10 @@
             <div class="contact-content">
                 <div class="contact-info">
                     <h3>Давайте обсудим вашу свадьбу!</h3>
-                    <p>Мы верим, что каждая пара уникальна. Оставьте заявку, и мы свяжемся с вами в течение 24 часов, чтобы обсудить первые детали вашего торжества.</p>
-                    <p style="margin-top: 20px;"><strong>Email:</strong> <a href="mailto:planningwedding96@gmail.com" style="color: inherit; text-decoration: none;">planningwedding96@gmail.com</a></p>
+                    <p>Мы верим, что каждая пара уникальна. Оставьте заявку, и мы свяжемся с вами в течение 24 часов,
+                        чтобы обсудить первые детали вашего торжества.</p>
+                    <p style="margin-top: 20px;"><strong>Email:</strong> <a href="mailto:planningwedding96@gmail.com"
+                            style="color: inherit; text-decoration: none;">planningwedding96@gmail.com</a></p>
                     <p><strong>Телефон:</strong> +375 (44) 774-97-73</p>
                 </div>
                 <div class="contact-form">
@@ -232,11 +257,14 @@
                             <input type="email" name="email" placeholder="Email" required>
                         </div>
                         <div class="form-group">
-                            <textarea name="message" rows="5" placeholder="Расскажите о вашей свадьбе" required></textarea>
+                            <textarea name="message" rows="5" placeholder="Расскажите о вашей свадьбе"
+                                required></textarea>
                         </div>
                         <button type="submit" class="btn">Отправить заявку</button>
                     </form>
-                    <div id="form-status" style="display: none; margin-top: 20px; padding: 15px; border-radius: 5px; text-align: center;"></div>
+                    <div id="form-status"
+                        style="display: none; margin-top: 20px; padding: 15px; border-radius: 5px; text-align: center;">
+                    </div>
                 </div>
             </div>
         </div>
@@ -255,39 +283,53 @@
     </footer>
 
     <script>
-        document.getElementById('wedding-contact-form').addEventListener('submit', async function(e) {
+        const API = '/api';
+
+            const authEntryLink = document.getElementById('auth-entry-link');
+            const hasToken = !!localStorage.getItem('token');
+            const hasUser = !!localStorage.getItem('user');
+            if (authEntryLink && hasToken && hasUser) {
+                authEntryLink.href = 'account.html';
+                authEntryLink.textContent = 'Мой кабинет';
+            }
+        document.getElementById('wedding-contact-form').addEventListener('submit', async function (e) {
             e.preventDefault();
-            
+
             const form = e.target;
             const statusDiv = document.getElementById('form-status');
             const submitBtn = form.querySelector('button');
-            
+
             const formData = new FormData(form);
             const data = {};
             formData.forEach((value, key) => data[key] = value);
-            
+
             submitBtn.disabled = true;
             submitBtn.innerText = 'Отправка...';
-            
+
             try {
-                 const response = await fetch('https://formspree.io/f/xqegogkb', {
-                     method: 'POST',
-                     headers: {
-                         'Accept': 'application/json',
-                         'Content-Type': 'application/json',
-                     },
-                     body: JSON.stringify(data)
-                 });
-                 
-                 if (response.ok) {
-                     statusDiv.style.display = 'block';
-                     statusDiv.style.backgroundColor = '#d4edda';
-                     statusDiv.style.color = '#155724';
-                     statusDiv.innerText = 'Спасибо! Ваша заявка успешно отправлена. Мы свяжемся с вами в ближайшее время.';
-                     form.reset();
-                 } else {
-                     throw new Error('Ошибка сервера');
-                 }
+                const token = localStorage.getItem('token');
+                const backendResponse = await fetch(`${API}/auth/request`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token || ''}` },
+                    body: JSON.stringify(data)
+                });
+
+                if (!backendResponse.ok) throw new Error('Ошибка сохранения заявки');
+
+                fetch('https://formspree.io/f/xqegogkb', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                }).catch(() => { });
+
+                statusDiv.style.display = 'block';
+                statusDiv.style.backgroundColor = '#d4edda';
+                statusDiv.style.color = '#155724';
+                statusDiv.innerText = 'Спасибо! Ваша заявка успешно отправлена. Мы свяжемся с вами в ближайшее время.';
+                form.reset();
             } catch (error) {
                 statusDiv.style.display = 'block';
                 statusDiv.style.backgroundColor = '#f8d7da';
@@ -296,7 +338,7 @@
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerText = 'Отправить заявку';
-                
+
                 setTimeout(() => {
                     statusDiv.style.display = 'none';
                 }, 5000);
@@ -321,24 +363,24 @@
             lightbox.style.display = 'none';
             document.body.style.overflow = 'auto';
         });
-        
-const sections = document.querySelectorAll('section[id]');
-const allNavLinks = document.querySelectorAll('.nav-links a');
 
-window.addEventListener('scroll', () => {
-  let current = '';
-  sections.forEach(section => {
-    if (window.scrollY >= section.offsetTop - 100) {
-      current = section.getAttribute('id');
-    }
-  });
-  allNavLinks.forEach(link => {
-    link.classList.remove('active');
-    if (link.getAttribute('href') === '#' + current) {
-      link.classList.add('active');
-    }
-  });
-});
+        const sections = document.querySelectorAll('section[id]');
+        const allNavLinks = document.querySelectorAll('.nav-links a');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                if (window.scrollY >= section.offsetTop - 100) {
+                    current = section.getAttribute('id');
+                }
+            });
+            allNavLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        });
         // Scroll Reveal
         const revealElements = document.querySelectorAll('.reveal');
         const revealOnScroll = () => {
@@ -358,7 +400,7 @@ window.addEventListener('scroll', () => {
         const photoSelect = document.getElementById('photographer');
         const videoSelect = document.getElementById('videographer');
         const guestsValDisplay = document.getElementById('guests-val');
-        
+
         const resBanquet = document.getElementById('res-banquet');
         const resDecor = document.getElementById('res-decor');
         const resMedia = document.getElementById('res-media');
@@ -400,7 +442,7 @@ window.addEventListener('scroll', () => {
             };
 
             const banquet = guests * guestPrice;
-            const decor = decorBase + (guests * 20); 
+            const decor = decorBase + (guests * 20);
             const media = photoPrices[photoLevel] + videoPrices[videoLevel];
             const total = banquet + decor + media;
 
@@ -454,7 +496,7 @@ window.addEventListener('scroll', () => {
                             <span class="comment-name">${c.name || 'Гость'}</span>
                             <span class="comment-date">${new Date(c.created_at).toLocaleDateString('ru-RU')}</span>
                         </div>
-                        ${c.rating ? `<span class="rating-display">${'★'.repeat(c.rating)}${'☆'.repeat(5-c.rating)}</span>` : ''}
+                        ${c.rating ? `<span class="rating-display">${'★'.repeat(c.rating)}${'☆'.repeat(5 - c.rating)}</span>` : ''}
                         <div class="comment-body">${c.text}</div>
                     </div>
                 `).join('');
@@ -509,11 +551,11 @@ window.addEventListener('scroll', () => {
                 setTimeout(() => { commentStatus.style.display = 'none'; }, 5000);
             }
         });
-         loadComments();
-          // Автоматически обновляем отзывы каждые 3 секунды
-          setInterval(loadComments, 3000);
-          const backToTop = document.getElementById('back-to-top');
-          window.addEventListener('scroll', () => {
+        loadComments();
+        // Автоматически обновляем отзывы каждые 3 секунды
+        setInterval(loadComments, 3000);
+        const backToTop = document.getElementById('back-to-top');
+        window.addEventListener('scroll', () => {
             if (window.scrollY > 400) {
                 backToTop.classList.add('visible');
             } else {
@@ -523,7 +565,8 @@ window.addEventListener('scroll', () => {
         backToTop.addEventListener('click', () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
-      </script>
-<button id="back-to-top">↑</button>
+    </script>
+    <button id="back-to-top">↑</button>
 </body>
+
 </html>

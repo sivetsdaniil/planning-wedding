@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Мой кабинет - Eternal Moments</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+    <nav>
+        <div class="container">
+            <a href="index.html" class="nav-logo">Eternal Moments</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="index.html#contact">Контакты</a></li>
+                <li><a href="account.html" style="color: var(--primary-color);">Мой кабинет</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="page-header">
+        <div class="container">
+            <h1>Мой кабинет</h1>
+            <p id="account-greeting"></p>
+        </div>
+    </section>
+
+    <section style="padding-top:40px;">
+        <div class="container" style="max-width:900px;">
+            <div style="text-align:center; margin-bottom:25px;">
+                <a id="login-link" href="auth.html" class="btn btn-outline" style="display:none;">Войти /
+                    зарегистрироваться</a>
+                <button id="logout-btn" class="btn btn-outline" style="display:none;">Выйти</button>
+            </div>
+            <div id="my-requests-wrap" style="display:none;">
+                <h3 style="margin-bottom:12px;">Мои заявки</h3>
+                <div id="my-requests-list"></div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        const API = '/api';
+        const greeting = document.getElementById('account-greeting');
+        const loginLink = document.getElementById('login-link');
+        const logoutBtn = document.getElementById('logout-btn');
+        const requestsWrap = document.getElementById('my-requests-wrap');
+        const requestsList = document.getElementById('my-requests-list');
+
+        const getUser = () => { try { return JSON.parse(localStorage.getItem('user')); } catch { return null; } };
+        const escapeHtml = (value = '') => value
+            .replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;').replaceAll("'", '&#39;');
+
+        async function loadMyRequests() {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+            try {
+                const response = await fetch(`${API}/auth/requests/my`, { headers: { Authorization: `Bearer ${token}` } });
+                if (!response.ok) throw new Error();
+                const items = await response.json();
+                requestsWrap.style.display = 'block';
+                requestsList.innerHTML = items.length ? items.map(r => `
+      <div style="background:#fff; border:1px solid #eee; border-radius:10px; padding:14px; margin-bottom:10px;">
+        <div><strong>Статус:</strong> ${escapeHtml(String(r.status || '—'))}</div>
+        <div><strong>Дата:</strong> ${new Date(r.created_at).toLocaleString('ru-RU')}</div>
+        <div style="margin-top:8px; color:#555;">${escapeHtml(String(r.message || ''))}</div>
+      </div>`).join('') : '<p style="color:#777;">У вас пока нет заявок.</p>';
+            } catch {
+                requestsWrap.style.display = 'block';
+                requestsList.innerHTML = '<p style="color:#b00020;">Не удалось загрузить заявки.</p>';
+            }
+        }
+
+        function renderAuthState() {
+            const user = getUser();
+            const token = localStorage.getItem('token');
+            if (user && token) {
+                greeting.textContent = `Вы вошли как ${user.name || user.email}.`;
+                logoutBtn.style.display = 'inline-block';
+                loginLink.style.display = 'none';
+                loadMyRequests();
+            } else {
+                greeting.textContent = 'Вы не авторизованы.';
+                logoutBtn.style.display = 'none';
+                loginLink.style.display = 'inline-block';
+                requestsWrap.style.display = 'none';
+            }
+        }
+
+        logoutBtn.addEventListener('click', () => {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            renderAuthState();
+        });
+
+        renderAuthState();
+    </script>
+</body>
+
+</html>

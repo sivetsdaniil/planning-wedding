@@ -11,9 +11,9 @@ const pool = new Pool({
     port: process.env.DB_PORT,
     database: process.env.DB_NAME,
 });
-    pool.on('connect', client => {
+pool.on('connect', client => {
     client.query("SET client_encoding TO 'UTF8'");
-    });
+});
 
 // Регистрация
 router.post('/register', async (req, res) => {
@@ -53,14 +53,16 @@ router.post('/login', async (req, res) => {
 // Создание заявки
 router.post('/request', async (req, res) => {
     const { name, email, message } = req.body;
+    if (!name || !email || !message) return res.status(400).json({ error: 'Заполните все поля заявки' });
+
     const token = req.headers.authorization?.split(' ')[1];
-    
+
     let user_id = null;
     if (token) {
         try {
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
             user_id = decoded.id;
-        } catch(e) {}
+        } catch (e) { }
     }
 
     try {
@@ -74,9 +76,26 @@ router.post('/request', async (req, res) => {
     }
 });
 
+// Получить заявки текущего пользователя
+router.get('/requests/my', async (req, res) => {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) return res.status(401).json({ error: 'Требуется авторизация' });
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const result = await pool.query(
+            'SELECT id, message, status, created_at FROM requests WHERE user_id = $1 ORDER BY created_at DESC',
+            [decoded.id]
+        );
+        res.json(result.rows);
+    } catch (err) {
+        res.status(401).json({ error: 'Невалидный токен' });
+    }
+});
+
 // Добавить отзыв
 router.post('/review', async (req, res) => {
-    const { name, message, rating } = req.body;
+    const { message, rating } = req.body;
     const token = req.headers.authorization?.split(' ')[1];
 
     let user_id = null;
