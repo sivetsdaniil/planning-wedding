@@ -101,10 +101,47 @@ router.post('/review', async (req, res) => {
 // Получить отзывы
 router.get('/reviews', async (req, res) => {
     try {
+        const approved = req.query.approved === 'true';
+        const query = approved
+            ? 'SELECT reviews.*, users.name FROM reviews LEFT JOIN users ON reviews.user_id = users.id WHERE reviews.approved = true ORDER BY reviews.created_at DESC'
+            : 'SELECT reviews.*, users.name FROM reviews LEFT JOIN users ON reviews.user_id = users.id ORDER BY reviews.created_at DESC';
+        const result = await pool.query(query);
+        res.json(result.rows);
+    } catch (err) {
+        res.status(500).json({ error: 'Ошибка сервера' });
+    }
+});
+
+// Получить ВСЕ отзывы для админки
+router.get('/admin/reviews', async (req, res) => {
+    try {
         const result = await pool.query(
             'SELECT reviews.*, users.name FROM reviews LEFT JOIN users ON reviews.user_id = users.id ORDER BY reviews.created_at DESC'
         );
         res.json(result.rows);
+    } catch (err) {
+        res.status(500).json({ error: 'Ошибка сервера' });
+    }
+});
+
+// Одобрить / скрыть отзыв
+router.patch('/admin/reviews/:id', async (req, res) => {
+    const { id } = req.params;
+    const { approved } = req.body;
+    try {
+        await pool.query('UPDATE reviews SET approved = $1 WHERE id = $2', [approved, id]);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: 'Ошибка сервера' });
+    }
+});
+
+// Удалить отзыв
+router.delete('/admin/reviews/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        await pool.query('DELETE FROM reviews WHERE id = $1', [id]);
+        res.json({ success: true });
     } catch (err) {
         res.status(500).json({ error: 'Ошибка сервера' });
     }

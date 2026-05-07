@@ -209,9 +209,7 @@
                     <!-- Сюда будут подгружаться только одобренные комментарии -->
                 </div>
 
-                <div style="text-align: center; margin-top: 40px;">
-                    <a href="admin.html" style="font-size: 0.8em; color: #ddd; text-decoration: none;">Панель управления</a>
-                </div>
+
             </div>
         </div>
     </section>
@@ -442,31 +440,22 @@ window.addEventListener('scroll', () => {
 
         const loadComments = async () => {
             try {
-                // Добавляем случайный параметр для обхода кэша браузера
-                const response = await fetch(`/get-comments?t=${new Date().getTime()}`);
-                let comments = await response.json();
-                
-                // Принудительно превращаем в массив, если пришел один объект
-                if (!Array.isArray(comments)) {
-                    comments = comments ? [comments] : [];
-                }
-                
-                // Отображаем только одобренные комментарии
-                const approvedComments = comments.filter(c => c.approved);
-                
-                if (approvedComments.length === 0) {
+                const response = await fetch('/api/auth/reviews?approved=true');
+                const comments = await response.json();
+
+                if (comments.length === 0) {
                     commentsList.innerHTML = '<p style="text-align:center; color:#888;">Пока здесь нет отзывов. Станьте первым!</p>';
                     return;
                 }
 
-                commentsList.innerHTML = approvedComments.reverse().map(c => `
+                commentsList.innerHTML = comments.map(c => `
                     <div class="comment-item">
                         <div class="comment-header">
-                            <span class="comment-name">${c.name}</span>
-                            <span class="comment-date">${c.date}</span>
+                            <span class="comment-name">${c.name || 'Гость'}</span>
+                            <span class="comment-date">${new Date(c.created_at).toLocaleDateString('ru-RU')}</span>
                         </div>
                         ${c.rating ? `<span class="rating-display">${'★'.repeat(c.rating)}${'☆'.repeat(5-c.rating)}</span>` : ''}
-                        <div class="comment-body">${c.text || c.message}</div>
+                        <div class="comment-body">${c.text}</div>
                     </div>
                 `).join('');
             } catch (e) { console.error('Error loading comments', e); }

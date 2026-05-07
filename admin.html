@@ -7,184 +7,154 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Montserrat', sans-serif; background-color: #faf9f7; color: #333; padding: 40px; }
-        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        h1 { color: #d4a373; text-align: center; }
-        .login-box { text-align: center; margin-bottom: 30px; }
-        input { padding: 10px; border: 1px solid #ddd; border-radius: 5px; width: 200px; }
-        .comment-item { border-bottom: 1px solid #eee; padding: 15px 0; display: flex; justify-content: space-between; align-items: center; }
-        .comment-info { flex-grow: 1; }
-        .comment-status { font-size: 0.8em; padding: 2px 6px; border-radius: 3px; margin-left: 10px; }
-        .status-pending { background: #fff3cd; color: #856404; }
-        .status-approved { background: #d4edda; color: #155724; }
-        .actions button { margin-left: 10px; padding: 5px 10px; border: none; border-radius: 3px; cursor: pointer; transition: 0.3s; }
-        .btn-approve { background-color: #d4edda; color: #155724; }
-        .btn-edit { background-color: #e2e3e5; color: #383d41; }
-        .btn-delete { background-color: #f8d7da; color: #721c24; }
-        .btn-save { background-color: #007bff; color: white; }
-        .btn-approve:hover { background-color: #c3e6cb; }
-        .btn-edit:hover { background-color: #d6d8db; }
-        .btn-delete:hover { background-color: #f5c6cb; }
-        .edit-fields { display: none; margin-top: 10px; flex-direction: column; gap: 10px; }
-        .edit-fields input, .edit-fields textarea { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-family: inherit; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        h1 { color: #d4a373; text-align: center; margin-bottom: 30px; }
+        .stats { display: flex; gap: 20px; margin-bottom: 30px; }
+        .stat-card { flex: 1; background: #faf9f7; border-radius: 8px; padding: 15px; text-align: center; }
+        .stat-card .num { font-size: 2em; font-weight: 600; color: #d4a373; }
+        .stat-card .label { font-size: 0.85em; color: #888; }
+        .comment-item { border: 1px solid #eee; border-radius: 8px; padding: 15px; margin-bottom: 15px; }
+        .comment-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .comment-name { font-weight: 600; }
+        .comment-date { font-size: 0.8em; color: #888; }
+        .comment-rating { color: #d4af37; }
+        .comment-text { color: #555; margin: 8px 0; }
+        .badge { font-size: 0.75em; padding: 3px 8px; border-radius: 10px; margin-left: 8px; }
+        .badge-pending { background: #fff3cd; color: #856404; }
+        .badge-approved { background: #d4edda; color: #155724; }
+        .actions { display: flex; gap: 8px; margin-top: 10px; }
+        .actions button { padding: 6px 14px; border: none; border-radius: 5px; cursor: pointer; font-size: 0.85em; transition: 0.2s; }
+        .btn-approve { background: #d4edda; color: #155724; }
+        .btn-hide { background: #fff3cd; color: #856404; }
+        .btn-delete { background: #f8d7da; color: #721c24; }
+        .btn-approve:hover { background: #c3e6cb; }
+        .btn-hide:hover { background: #ffeaa7; }
+        .btn-delete:hover { background: #f5c6cb; }
         .back-link { display: block; text-align: center; margin-top: 20px; color: #d4a373; text-decoration: none; }
+        .empty { text-align: center; color: #888; padding: 40px; }
+        .filter-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .filter-tab { padding: 8px 16px; border: 1px solid #ddd; border-radius: 20px; cursor: pointer; font-size: 0.85em; background: white; }
+        .filter-tab.active { background: #d4a373; color: white; border-color: #d4a373; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Панель управления отзывами</h1>
-        
-        <div class="login-box">
-            <input type="password" id="admin-password" placeholder="Введите пароль">
-            <p style="font-size: 0.8em; color: #888; margin-top: 5px;">(По умолчанию: admin)</p>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="num" id="stat-total">0</div>
+                <div class="label">Всего отзывов</div>
+            </div>
+            <div class="stat-card">
+                <div class="num" id="stat-approved">0</div>
+                <div class="label">Одобрено</div>
+            </div>
+            <div class="stat-card">
+                <div class="num" id="stat-pending">0</div>
+                <div class="label">Ожидают</div>
+            </div>
+            <div class="stat-card">
+                <div class="num" id="stat-avg">0</div>
+                <div class="label">Средний рейтинг</div>
+            </div>
         </div>
 
-        <div id="admin-comments-list">
-            <!-- Комментарии загрузятся сюда -->
+        <div class="filter-tabs">
+            <button class="filter-tab active" onclick="setFilter('all', this)">Все</button>
+            <button class="filter-tab" onclick="setFilter('pending', this)">Ожидают</button>
+            <button class="filter-tab" onclick="setFilter('approved', this)">Одобренные</button>
         </div>
+
+        <div id="reviews-list"></div>
 
         <a href="index.html" class="back-link">← Вернуться на сайт</a>
     </div>
 
     <script>
-        const passwordInput = document.getElementById('admin-password');
-        const commentsList = document.getElementById('admin-comments-list');
-        let isEditingAny = false; // Флаг, чтобы не обновлять список во время редактирования
+        let allReviews = [];
+        let currentFilter = 'all';
 
-        const loadAdminComments = async () => {
-            if (isEditingAny) return; // Не обновляем, если мы что-то правим
-
+        const load = async () => {
             try {
-                const response = await fetch(`/get-comments?t=${new Date().getTime()}`);
-                let comments = await response.json();
-                
-                // Принудительно превращаем в массив, если пришел один объект
-                if (!Array.isArray(comments)) {
-                    comments = comments ? [comments] : [];
-                }
-                
-                if (comments.length === 0) {
-                    commentsList.innerHTML = '<p style="text-align:center;">Отзывов пока нет.</p>';
-                    return;
-                }
-
-                commentsList.innerHTML = comments.reverse().map(c => `
-                    <div class="comment-item" id="comment-${c.id}">
-                        <div class="comment-info">
-                            <div class="view-mode" style="display: block;">
-                                <strong>${c.name}</strong> 
-                                <span class="comment-status ${c.approved ? 'status-approved' : 'status-pending'}">
-                                    ${c.approved ? 'Одобрен' : 'Ожидает'}
-                                </span>
-                                <br>
-                                <small>${c.date}</small>
-                                ${c.rating ? `<div style="color:#d4af37; margin-top:5px;">${'★'.repeat(c.rating)}${'☆'.repeat(5-c.rating)}</div>` : ''}
-                                <p class="message-text" style="margin: 5px 0;">${c.text || c.message}</p>
-                            </div>
-                            <div class="edit-fields" style="display: none;">
-                                <input type="text" class="edit-name" value="${c.name.replace(/"/g, '&quot;')}">
-                                <textarea class="edit-text" rows="3">${(c.text || c.message || '').replace(/"/g, '&quot;').replace(/\n/g, ' ')}</textarea>
-                                <div style="margin-top: 10px;">
-                                    <button class="btn-save" onclick="saveEdit('${c.id}')">Сохранить</button>
-                                    <button onclick="toggleEdit('${c.id}')">Отмена</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="actions">
-                            ${!c.approved ? `<button class="btn-approve" onclick="adminAction('${c.id}', 'approve')">Одобрить</button>` : ''}
-                            <button class="btn-edit" onclick="toggleEdit('${c.id}')">Ред.</button>
-                            <button class="btn-delete" onclick="adminAction('${c.id}', 'delete')">Удалить</button>
-                        </div>
-                    </div>
-                `).join('');
-            } catch (e) { console.error('Error loading comments', e); }
+                const res = await fetch('/api/auth/admin/reviews');
+                allReviews = await res.json();
+                updateStats();
+                render();
+            } catch(e) { console.error(e); }
         };
 
-        async function adminAction(id, action, extraData = {}) {
-            const password = passwordInput.value;
-            if (!password) { alert('Введите пароль!'); return; }
+        const updateStats = () => {
+            const approved = allReviews.filter(r => r.approved).length;
+            const pending = allReviews.length - approved;
+            const avg = allReviews.length 
+                ? (allReviews.reduce((s, r) => s + (r.rating || 0), 0) / allReviews.length).toFixed(1)
+                : 0;
+            document.getElementById('stat-total').textContent = allReviews.length;
+            document.getElementById('stat-approved').textContent = approved;
+            document.getElementById('stat-pending').textContent = pending;
+            document.getElementById('stat-avg').textContent = avg;
+        };
 
-            try {
-                const response = await fetch('/admin-action', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id, action, password, ...extraData })
-                });
+        const render = () => {
+            const list = document.getElementById('reviews-list');
+            let reviews = allReviews;
+            if (currentFilter === 'pending') reviews = allReviews.filter(r => !r.approved);
+            if (currentFilter === 'approved') reviews = allReviews.filter(r => r.approved);
 
-                if (response.ok) {
-                    isEditingAny = false; // Сбрасываем флаг после успешного действия
-                    loadAdminComments();
-                } else {
-                    const err = await response.json();
-                    alert('Ошибка: ' + (err.message || 'Доступ запрещен'));
-                }
-            } catch (e) { alert('Ошибка при выполнении действия'); }
-        }
-
-        function toggleEdit(id) {
-            const item = document.getElementById(`comment-${id}`);
-            const view = item.querySelector('.view-mode');
-            const edit = item.querySelector('.edit-fields');
-            
-            if (edit.style.display === 'none') {
-                // Включаем режим редактирования
-                edit.style.display = 'flex';
-                view.style.display = 'none';
-                isEditingAny = true; // Блокируем авто-обновление
-            } else {
-                // Выключаем
-                edit.style.display = 'none';
-                view.style.display = 'block';
-                isEditingAny = false; // Разрешаем авто-обновление
+            if (reviews.length === 0) {
+                list.innerHTML = '<div class="empty">Отзывов нет</div>';
+                return;
             }
-        }
 
-        async function saveEdit(id) {
-            console.log('Attempting to save comment:', id);
-            const item = document.getElementById(`comment-${id}`);
-            const btn = item.querySelector('.btn-save');
-            const newName = item.querySelector('.edit-name').value;
-            const newMessage = item.querySelector('.edit-text').value;
-            
-            const originalText = btn.innerText;
-            btn.innerText = 'Сохранение...';
-            btn.disabled = true;
+            list.innerHTML = reviews.map(r => `
+                <div class="comment-item" id="rev-${r.id}">
+                    <div class="comment-header">
+                        <div>
+                            <span class="comment-name">${r.name || 'Гость'}</span>
+                            <span class="badge ${r.approved ? 'badge-approved' : 'badge-pending'}">
+                                ${r.approved ? 'Одобрен' : 'Ожидает'}
+                            </span>
+                        </div>
+                        <span class="comment-date">${new Date(r.created_at).toLocaleDateString('ru-RU')}</span>
+                    </div>
+                    ${r.rating ? `<div class="comment-rating">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</div>` : ''}
+                    <div class="comment-text">${r.text}</div>
+                    <div class="actions">
+                        ${!r.approved 
+                            ? `<button class="btn-approve" onclick="approve(${r.id}, true)">✓ Одобрить</button>`
+                            : `<button class="btn-hide" onclick="approve(${r.id}, false)">✕ Скрыть</button>`
+                        }
+                        <button class="btn-delete" onclick="remove(${r.id})">Удалить</button>
+                    </div>
+                </div>
+            `).join('');
+        };
 
-            try {
-                const password = passwordInput.value;
-                if (!password) { alert('Введите пароль!'); return; }
+        const approve = async (id, approved) => {
+            await fetch(`/api/auth/admin/reviews/${id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ approved })
+            });
+            load();
+        };
 
-                const response = await fetch('/admin-action', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id, action: 'edit', password, name: newName, message: newMessage })
-                });
+        const remove = async (id) => {
+            if (!confirm('Удалить отзыв?')) return;
+            await fetch(`/api/auth/admin/reviews/${id}`, { method: 'DELETE' });
+            load();
+        };
 
-                if (response.ok) {
-                    console.log('Save successful');
-                    isEditingAny = false;
-                    await loadAdminComments();
-                } else {
-                    const err = await response.json();
-                    alert('Ошибка: ' + (err.message || 'Доступ запрещен'));
-                }
-            } catch (e) { 
-                console.error('Save error:', e);
-                alert('Ошибка при сохранении'); 
-            } finally {
-                btn.innerText = originalText;
-                btn.disabled = false;
-            }
-        }
+        const setFilter = (filter, btn) => {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            render();
+        };
 
-        passwordInput.addEventListener('input', () => {
-            isEditingAny = false; // Сброс при вводе пароля
-            loadAdminComments();
-        });
-        
-        // Автоматическое обновление каждые 3 секунды
-        setInterval(loadAdminComments, 3000);
-        
-        loadAdminComments();
+        load();
+        setInterval(load, 5000);
     </script>
 </body>
 </html>
