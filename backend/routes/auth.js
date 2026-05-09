@@ -131,8 +131,24 @@ router.get('/reviews', async (req, res) => {
     }
 });
 
+// Проверка что пользователь — админ
+const requireAdmin = async (req, res, next) => {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) return res.status(401).json({ error: 'Требуется авторизация' });
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const result = await pool.query('SELECT role FROM users WHERE id = $1', [decoded.id]);
+        const user = result.rows[0];
+        if (!user || user.role !== 'admin') return res.status(403).json({ error: 'Доступ запрещён' });
+        next();
+    } catch (err) {
+        res.status(401).json({ error: 'Невалидный токен' });
+    }
+};
+
 // Получить ВСЕ отзывы для админки
-router.get('/admin/reviews', async (req, res) => {
+router.get('/admin/reviews', requireAdmin, async (req, res) => {
     try {
         const result = await pool.query(
             'SELECT reviews.*, users.name FROM reviews LEFT JOIN users ON reviews.user_id = users.id ORDER BY reviews.created_at DESC'
@@ -144,7 +160,7 @@ router.get('/admin/reviews', async (req, res) => {
 });
 
 // Одобрить / скрыть отзыв
-router.patch('/admin/reviews/:id', async (req, res) => {
+router.patch('/admin/reviews/:id', requireAdmin, async (req, res) => {
     const { id } = req.params;
     const { approved } = req.body;
     try {
@@ -156,7 +172,7 @@ router.patch('/admin/reviews/:id', async (req, res) => {
 });
 
 // Удалить отзыв
-router.delete('/admin/reviews/:id', async (req, res) => {
+router.delete('/admin/reviews/:id', requireAdmin, async (req, res) => {
     const { id } = req.params;
     try {
         await pool.query('DELETE FROM reviews WHERE id = $1', [id]);

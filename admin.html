@@ -76,13 +76,20 @@
         let currentFilter = 'all';
 
         const load = async () => {
-            try {
-                const res = await fetch('/api/auth/admin/reviews');
-                allReviews = await res.json();
-                updateStats();
-                render();
-            } catch(e) { console.error(e); }
-        };
+                try {
+                    const token = localStorage.getItem('token');
+                    const res = await fetch('/api/auth/admin/reviews', {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    if (res.status === 401 || res.status === 403) {
+                        document.querySelector('.container').innerHTML = '<h2 style="text-align:center; color:red;">Доступ запрещён. Войдите как администратор.</h2>';
+                        return;
+                    }
+                    allReviews = await res.json();
+                    updateStats();
+                    render();
+                } catch (e) { console.error(e); }
+            };
 
         const updateStats = () => {
             const approved = allReviews.filter(r => r.approved).length;
@@ -132,19 +139,27 @@
         };
 
         const approve = async (id, approved) => {
-            await fetch(`/api/auth/admin/reviews/${id}`, {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ approved })
-            });
-            load();
-        };
+                const token = localStorage.getItem('token');
+                await fetch(`/api/auth/admin/reviews/${id}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ approved })
+                });
+                load();
+            };
 
-        const remove = async (id) => {
-            if (!confirm('Удалить отзыв?')) return;
-            await fetch(`/api/auth/admin/reviews/${id}`, { method: 'DELETE' });
-            load();
-        };
+            const remove = async (id) => {
+                if (!confirm('Удалить отзыв?')) return;
+                const token = localStorage.getItem('token');
+                await fetch(`/api/auth/admin/reviews/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                load();
+            };
 
         const setFilter = (filter, btn) => {
             currentFilter = filter;
