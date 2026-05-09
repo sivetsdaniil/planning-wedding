@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личный кабинет - Eternal Moments</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body { background: #faf9f7; font-family: 'Montserrat', sans-serif; }
+        .profile-wrapper { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+        .profile-header { background: white; border-radius: 12px; padding: 30px; margin-bottom: 24px; box-shadow: 0 2px 15px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 24px; }
+        .profile-avatar { width: 80px; height: 80px; background: #c9a96e; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2em; color: white; flex-shrink: 0; }
+        .profile-info h2 { font-family: 'Playfair Display', serif; color: #333; margin: 0 0 4px; }
+        .profile-info p { color: #888; margin: 0 0 12px; font-size: 0.9em; }
+        .btn-edit-profile { padding: 8px 20px; background: #c9a96e; color: white; border: none; border-radius: 20px; cursor: pointer; font-size: 0.85em; }
+        .btn-edit-profile:hover { background: #b8935a; }
+
+        .edit-form { display: none; margin-top: 16px; }
+        .edit-form input { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit; box-sizing: border-box; }
+        .edit-form input:focus { outline: none; border-color: #c9a96e; }
+        .edit-form .btn-save { padding: 10px 24px; background: #c9a96e; color: white; border: none; border-radius: 8px; cursor: pointer; margin-right: 8px; }
+        .edit-form .btn-cancel { padding: 10px 24px; background: #eee; color: #333; border: none; border-radius: 8px; cursor: pointer; }
+
+        .tabs { display: flex; gap: 4px; background: white; border-radius: 12px; padding: 6px; margin-bottom: 24px; box-shadow: 0 2px 15px rgba(0,0,0,0.05); }
+        .tab { flex: 1; padding: 12px; text-align: center; border-radius: 8px; cursor: pointer; font-weight: 500; color: #888; transition: all 0.3s; font-size: 0.9em; border: none; background: none; }
+        .tab.active { background: #c9a96e; color: white; }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 2px 15px rgba(0,0,0,0.05); margin-bottom: 16px; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
+        .card-title { font-weight: 600; color: #333; }
+        .card-date { font-size: 0.8em; color: #aaa; }
+        .card-text { color: #555; font-size: 0.9em; line-height: 1.6; }
+        .badge { display: inline-block; padding: 3px 10px; border-radius: 10px; font-size: 0.75em; font-weight: 600; }
+        .badge-new { background: #fff3cd; color: #856404; }
+        .badge-done { background: #d4edda; color: #155724; }
+        .badge-pending { background: #e2e3e5; color: #383d41; }
+        .rating { color: #d4af37; font-size: 1.1em; margin-bottom: 6px; }
+        .empty { text-align: center; color: #aaa; padding: 40px; font-size: 0.9em; }
+        .back-link { display: inline-block; margin-bottom: 20px; color: #c9a96e; text-decoration: none; font-size: 0.9em; }
+        .back-link:hover { text-decoration: underline; }
+        .logout-btn { padding: 8px 20px; background: #f8d7da; color: #721c24; border: none; border-radius: 20px; cursor: pointer; font-size: 0.85em; margin-left: 10px; }
+        .logout-btn:hover { background: #f5c6cb; }
+    </style>
+</head>
+<body>
+
+<div class="profile-wrapper">
+    <a href="index.html" class="back-link">← Вернуться на сайт</a>
+
+    <div class="profile-header">
+        <div class="profile-avatar" id="avatar-letter">?</div>
+        <div class="profile-info" style="flex:1;">
+            <h2 id="profile-name">Загрузка...</h2>
+            <p id="profile-email"></p>
+            <button class="btn-edit-profile" onclick="toggleEdit()">Редактировать профиль</button>
+            <button class="logout-btn" onclick="logout()">Выйти</button>
+            <div class="edit-form" id="edit-form">
+                <input type="text" id="edit-name" placeholder="Имя">
+                <input type="email" id="edit-email" placeholder="Email">
+                <input type="password" id="edit-password" placeholder="Новый пароль (необязательно)">
+                <div>
+                    <button class="btn-save" onclick="saveProfile()">Сохранить</button>
+                    <button class="btn-cancel" onclick="toggleEdit()">Отмена</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab('requests', this)">Мои заявки</button>
+        <button class="tab" onclick="switchTab('reviews', this)">Мои отзывы</button>
+    </div>
+
+    <div id="tab-requests" class="tab-content active">
+        <div id="requests-list"></div>
+    </div>
+
+    <div id="tab-reviews" class="tab-content">
+        <div id="reviews-list"></div>
+    </div>
+</div>
+
+<script>
+    const token = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('user'));
+
+    // Если не залогинен — редирект
+    if (!token || !user) {
+        window.location.href = 'auth.html';
+    }
+    if (user.role === 'admin') {
+        window.location.href = 'admin.html';
+    }
+
+    // Заполняем шапку профиля
+    document.getElementById('profile-name').textContent = user.name;
+    document.getElementById('profile-email').textContent = user.email;
+    document.getElementById('avatar-letter').textContent = user.name?.charAt(0).toUpperCase();
+    document.getElementById('edit-name').value = user.name;
+    document.getElementById('edit-email').value = user.email;
+
+    // Переключение табов
+    const switchTab = (tab, btn) => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('tab-' + tab).classList.add('active');
+    };
+
+    // Редактирование профиля
+    const toggleEdit = () => {
+        const form = document.getElementById('edit-form');
+        form.style.display = form.style.display === 'block' ? 'none' : 'block';
+    };
+
+    const saveProfile = async () => {
+        const name = document.getElementById('edit-name').value;
+        const email = document.getElementById('edit-email').value;
+        const password = document.getElementById('edit-password').value;
+
+        const body = { name, email };
+        if (password) body.password = password;
+
+        const res = await fetch('/api/auth/profile', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify(body)
+        });
+
+        if (res.ok) {
+            const data = await res.json();
+            localStorage.setItem('user', JSON.stringify({ ...user, name: data.name, email: data.email }));
+            document.getElementById('profile-name').textContent = data.name;
+            document.getElementById('profile-email').textContent = data.email;
+            document.getElementById('avatar-letter').textContent = data.name?.charAt(0).toUpperCase();
+            toggleEdit();
+        } else {
+            alert('Ошибка при сохранении');
+        }
+    };
+
+    // Загрузка заявок
+    const loadRequests = async () => {
+        const res = await fetch('/api/auth/requests/my', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const requests = await res.json();
+        const list = document.getElementById('requests-list');
+
+        if (requests.length === 0) {
+            list.innerHTML = '<div class="empty">У вас пока нет заявок.<br>Оставьте заявку на главной странице!</div>';
+            return;
+        }
+
+        list.innerHTML = requests.map(r => {
+            const nameMatch = r.message.match(/Имя: ([^,]+)/);
+            const emailMatch = r.message.match(/Email: ([^,]+)/);
+            const msgMatch = r.message.match(/Сообщение: (.+)/);
+            const name = nameMatch ? nameMatch[1].trim() : '—';
+            const email = emailMatch ? emailMatch[1].trim() : '—';
+            const msg = msgMatch ? msgMatch[1].trim() : r.message;
+            return `
+            <div class="card">
+                <div class="card-header">
+                    <span class="badge badge-new">${r.status}</span>
+                    <span class="card-date">${new Date(r.created_at).toLocaleDateString('ru-RU')}</span>
+                </div>
+                <div style="margin-top:10px;font-size:0.9em;display:flex;flex-direction:column;gap:6px;">
+                    <div style="display:flex;gap:8px;"><span style="color:#aaa;width:90px;flex-shrink:0;">Имя:</span><span>${name}</span></div>
+                    <div style="display:flex;gap:8px;"><span style="color:#aaa;width:90px;flex-shrink:0;">Email:</span><span>${email}</span></div>
+                    <div style="display:flex;gap:8px;"><span style="color:#aaa;width:90px;flex-shrink:0;">Сообщение:</span><span style="color:#555;">${msg}</span></div>
+                </div>
+            </div>`;
+        }).join('');
+    };
+
+    // Загрузка отзывов
+    const loadReviews = async () => {
+        const res = await fetch('/api/auth/reviews/my', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const reviews = await res.json();
+        const list = document.getElementById('reviews-list');
+
+        if (reviews.length === 0) {
+            list.innerHTML = '<div class="empty">У вас пока нет отзывов.<br>Поделитесь впечатлениями на главной странице!</div>';
+            return;
+        }
+
+        list.innerHTML = reviews.map(r => `
+            <div class="card">
+                <div class="card-header">
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        <span style="font-weight:600;">${user.name}</span>
+                        <span class="badge ${r.approved ? 'badge-done' : 'badge-pending'}">${r.approved ? 'Опубликован' : 'На модерации'}</span>
+                    </div>
+                    <span class="card-date">${new Date(r.created_at).toLocaleDateString('ru-RU')}</span>
+                </div>
+                ${r.rating ? `<div class="rating" style="margin:8px 0;">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</div>` : ''}
+                <div class="card-text">${r.text}</div>
+            </div>
+        `).join('');
+    };
+
+    const logout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.href = 'index.html';
+    };
+
+    loadRequests();
+    loadReviews();
+</script>
+</body>
+</html>
