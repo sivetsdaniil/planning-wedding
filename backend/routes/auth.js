@@ -102,13 +102,19 @@ router.post('/review', async (req, res) => {
         try {
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
             user_id = decoded.id;
+
+            // Проверка на существующий отзыв от этого пользователя
+            const existingReview = await pool.query('SELECT id FROM reviews WHERE user_id = $1', [user_id]);
+            if (existingReview.rows.length > 0) {
+                return res.status(400).json({ error: 'Вы уже оставляли отзыв' });
+            }
         } catch (e) { }
     }
 
     try {
         await pool.query(
-            'INSERT INTO reviews (user_id, text, rating) VALUES ($1, $2, $3)',
-            [user_id, message, parseInt(rating)]
+            'INSERT INTO reviews (user_id, text, rating, approved) VALUES ($1, $2, $3, $4)',
+            [user_id, message || '', parseInt(rating), false] // approved: false по умолчанию
         );
         res.json({ success: true });
     } catch (err) {

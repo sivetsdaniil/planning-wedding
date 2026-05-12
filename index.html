@@ -243,12 +243,15 @@
                 <div class="section-title" style="margin-top: 20px; margin-bottom: 40px;">
                     <h3>Отзывы наших пар</h3>
                     <p>Поделитесь вашими впечатлениями о нашей работе</p>
+                    <div id="rating-stats" style="margin-top: 15px; font-size: 1.1em; color: #c9a96e; font-weight: 600;">
+                        <!-- Здесь будет средний рейтинг -->
+                    </div>
                 </div>
 
                 <div class="comment-form">
                     <form id="comment-form">
-                        <div class="form-group">
-                            <input type="text" name="name" id="comment-name" placeholder="Ваше имя" required>
+                        <div id="guest-name-group" class="form-group">
+                            <input type="text" name="name" id="comment-name" placeholder="Ваше имя">
                         </div>
                         <div class="rating-group">
                             <input type="radio" name="rating" id="star5" value="5" required><label for="star5">★</label>
@@ -259,8 +262,7 @@
                             <span style="margin-right: 15px; font-weight: 600;">Оценка:</span>
                         </div>
                         <div class="form-group">
-                            <textarea name="message" id="comment-text" rows="3" placeholder="Ваш отзыв или пожелание"
-                                required></textarea>
+                            <textarea name="message" id="comment-text" rows="3" placeholder="Ваш отзыв или пожелание (необязательно)"></textarea>
                         </div>
                         <button type="submit" class="btn">Отправить отзыв</button>
                     </form>
@@ -306,20 +308,42 @@
             const form = e.target;
             const statusDiv = document.getElementById('form-status');
             const submitBtn = form.querySelector('button');
+            const token = localStorage.getItem('token');
+            const user = JSON.parse(localStorage.getItem('user'));
 
             const formData = new FormData(form);
-            const data = {};
-            formData.forEach((value, key) => data[key] = value);
+            const data = Object.fromEntries(formData.entries());
+
+            // Функция для очистки текста от спецсимволов, ломающих JSON
+            const cleanText = (str) => (str || '').trim().replace(/[\n\r\t]/g, ' ').replace(/\\/g, '/');
+
+            const name = cleanText(data.name);
+            const email = cleanText(data.email);
+            const message = cleanText(data.message);
+
+            // Если авторизован, добавляем имя и email в сообщение, если их нет
+            let finalMessage = `Имя: ${name}, Email: ${email}, Сообщение: ${message}`;
 
             submitBtn.disabled = true;
             submitBtn.innerText = 'Отправка...';
 
             try {
-                const token = localStorage.getItem('token');
-                const backendResponse = await fetch(`${API}/auth/request`, {
+                const backendResponse = await fetch('/api/auth/request', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token || ''}` },
-                    body: JSON.stringify(data)
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': token ? `Bearer ${token}` : ''
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        email: email,
+                        message: finalMessage,
+                        guests: data.guests,
+                        package: data.package,
+                        photographer: data.photographer,
+                        videographer: data.videographer,
+                        budget: data.budget
+                    })
                 });
 
                 if (!backendResponse.ok) throw new Error('Ошибка сохранения заявки');
@@ -511,9 +535,27 @@
         const commentsList = document.getElementById('comments-list');
 
         const loadComments = async () => {
+            // Скрываем поле имени, если пользователь авторизован
+            const user = JSON.parse(localStorage.getItem('user'));
+            const nameGroup = document.getElementById('guest-name-group');
+            if (user && nameGroup) {
+                nameGroup.style.display = 'none';
+            } else if (nameGroup) {
+                nameGroup.style.display = 'block';
+            }
+
             try {
                 const response = await fetch('/api/auth/reviews?approved=true');
                 const comments = await response.json();
+                const stats = document.getElementById('rating-stats');
+
+                if (comments.length > 0) {
+                    const totalRating = comments.reduce((acc, r) => acc + (r.rating || 0), 0);
+                    const avgRating = (totalRating / comments.length).toFixed(1);
+                    stats.innerHTML = `Средний рейтинг: ${avgRating} ★ (${comments.length} ${getReviewWord(comments.length)})`;
+                } else {
+                    stats.innerHTML = '';
+                }
 
                 if (comments.length === 0) {
                     commentsList.innerHTML = '<p style="text-align:center; color:#888;">Пока здесь нет отзывов. Станьте первым!</p>';
@@ -527,18 +569,47 @@
                             <span class="comment-date">${new Date(c.created_at).toLocaleDateString('ru-RU')}</span>
                         </div>
                         ${c.rating ? `<span class="rating-display">${'★'.repeat(c.rating)}${'☆'.repeat(5 - c.rating)}</span>` : ''}
-                        <div class="comment-body">${c.text}</div>
+                        ${c.text ? `<div class="comment-body">${c.text}</div>` : ''}
                     </div>
                 `).join('');
             } catch (e) { console.error('Error loading comments', e); }
         };
 
+        function getReviewWord(count) {
+            const lastDigit = count % 10;
+            const lastTwoDigits = count % 100;
+            if (lastTwoDigits >= 11 && lastTwoDigits <= 14) return 'отзывов';
+            if (lastDigit === 1) return 'отзыв';
+            if (lastDigit >= 2 && lastDigit <= 4) return 'отзыва';
+            return 'отзывов';
+        }
+
         commentForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+
+            // Проверка для гостей через localStorage
+            if (!localStorage.getItem('token') && localStorage.getItem('guest_reviewed')) {
+                commentStatus.style.display = 'block';
+                commentStatus.style.backgroundColor = '#f8d7da';
+                commentStatus.style.color = '#721c24';
+                commentStatus.innerText = 'Вы уже оставляли отзыв как гость.';
+                return;
+            }
+
             const submitBtn = commentForm.querySelector('button');
             const formData = new FormData(commentForm);
-            const data = {};
-            formData.forEach((value, key) => data[key] = value);
+            const user = JSON.parse(localStorage.getItem('user'));
+            const guestName = formData.get('name');
+            const messageText = formData.get('message') || '';
+
+            // Функция для очистки текста от спецсимволов
+            const cleanText = (str) => (str || '').trim().replace(/[\n\r\t]/g, ' ').replace(/\\/g, '/');
+
+            const data = {
+                name: user ? user.name : (guestName ? cleanText(guestName) : 'Гость'),
+                rating: parseInt(formData.get('rating')),
+                message: cleanText(messageText)
+            };
 
             submitBtn.disabled = true;
             submitBtn.innerText = 'Отправка...';
@@ -549,32 +620,31 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
+                        'Authorization': token ? `Bearer ${token}` : ''
                     },
                     body: JSON.stringify(data)
                 });
 
+                const result = await serverResponse.json();
+
                 if (serverResponse.ok) {
+                    if (!token) {
+                        localStorage.setItem('guest_reviewed', 'true');
+                    }
                     commentStatus.style.display = 'block';
                     commentStatus.style.backgroundColor = '#d4edda';
                     commentStatus.style.color = '#155724';
-                    commentStatus.innerText = 'Спасибо! Ваш отзыв отправлен.';
+                    commentStatus.innerText = 'Спасибо! Ваш отзыв отправлен администратору на модерацию.';
                     commentForm.reset();
                     loadComments();
-
-                    fetch('https://formspree.io/f/xqegogkb', {
-                        method: 'POST',
-                        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-                        body: JSON.stringify(data)
-                    }).catch(err => console.error('Formspree error:', err));
                 } else {
-                    throw new Error('Ошибка сервера');
+                    throw new Error(result.error || 'Ошибка сервера');
                 }
             } catch (error) {
                 commentStatus.style.display = 'block';
                 commentStatus.style.backgroundColor = '#f8d7da';
                 commentStatus.style.color = '#721c24';
-                commentStatus.innerText = 'Произошла ошибка. Попробуйте еще раз.';
+                commentStatus.innerText = error.message || 'Произошла ошибка. Попробуйте еще раз.';
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerText = 'Отправить отзыв';
