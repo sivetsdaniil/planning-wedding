@@ -59,9 +59,18 @@
             <button class="btn-edit-profile" onclick="toggleEdit()">Редактировать профиль</button>
             <button class="logout-btn" onclick="logout()">Выйти</button>
             <div class="edit-form" id="edit-form">
+                <p style="font-size: 0.8em; color: #888; margin-bottom: 10px;">Для подтверждения изменений введите текущий пароль:</p>
+                <input type="password" id="current-password" placeholder="Текущий пароль" required>
+                <hr style="border: none; border-top: 1px solid #eee; margin: 15px 0;">
                 <input type="text" id="edit-name" placeholder="Имя">
                 <input type="email" id="edit-email" placeholder="Email">
-                <input type="password" id="edit-password" placeholder="Новый пароль (необязательно)">
+                <div style="margin-bottom: 15px;">
+                    <button class="btn-edit-profile" style="background: #eee; color: #333; width: auto;" onclick="togglePasswordForm()">Сменить пароль</button>
+                </div>
+                <div id="password-change-fields" style="display: none; margin-bottom: 15px; padding: 15px; background: #fdfaf8; border-radius: 8px; border: 1px dashed #c9a96e;">
+                    <input type="password" id="edit-password" placeholder="Новый пароль">
+                    <input type="password" id="edit-password-confirm" placeholder="Подтвердите новый пароль">
+                </div>
                 <div>
                     <button class="btn-save" onclick="saveProfile()">Сохранить</button>
                     <button class="btn-cancel" onclick="toggleEdit()">Отмена</button>
@@ -115,31 +124,59 @@
     const toggleEdit = () => {
         const form = document.getElementById('edit-form');
         form.style.display = form.style.display === 'block' ? 'none' : 'block';
+        // Скрываем форму пароля при закрытии/открытии основной формы
+        document.getElementById('password-change-fields').style.display = 'none';
+    };
+
+    const togglePasswordForm = () => {
+        const fields = document.getElementById('password-change-fields');
+        fields.style.display = fields.style.display === 'block' ? 'none' : 'block';
     };
 
     const saveProfile = async () => {
+        const currentPassword = document.getElementById('current-password').value;
         const name = document.getElementById('edit-name').value;
         const email = document.getElementById('edit-email').value;
         const password = document.getElementById('edit-password').value;
+        const passwordConfirm = document.getElementById('edit-password-confirm').value;
 
-        const body = { name, email };
+        if (!currentPassword) {
+            alert('Пожалуйста, введите текущий пароль для подтверждения изменений');
+            return;
+        }
+
+        if (password && password !== passwordConfirm) {
+            alert('Новые пароли не совпадают');
+            return;
+        }
+
+        const body = { currentPassword, name, email };
         if (password) body.password = password;
 
-        const res = await fetch('/api/auth/profile', {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-            body: JSON.stringify(body)
-        });
+        try {
+            const res = await fetch('/api/auth/profile', {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify(body)
+            });
 
-        if (res.ok) {
             const data = await res.json();
-            localStorage.setItem('user', JSON.stringify({ ...user, name: data.name, email: data.email }));
-            document.getElementById('profile-name').textContent = data.name;
-            document.getElementById('profile-email').textContent = data.email;
-            document.getElementById('avatar-letter').textContent = data.name?.charAt(0).toUpperCase();
-            toggleEdit();
-        } else {
-            alert('Ошибка при сохранении');
+
+            if (res.ok) {
+                localStorage.setItem('user', JSON.stringify({ ...user, name: data.name, email: data.email }));
+                document.getElementById('profile-name').textContent = data.name;
+                document.getElementById('profile-email').textContent = data.email;
+                document.getElementById('avatar-letter').textContent = data.name?.charAt(0).toUpperCase();
+                 document.getElementById('current-password').value = '';
+                 document.getElementById('edit-password').value = '';
+                 document.getElementById('edit-password-confirm').value = '';
+                 toggleEdit();
+                 alert('Профиль успешно обновлен');
+            } else {
+                alert(data.error || 'Ошибка при сохранении');
+            }
+        } catch (error) {
+            alert('Ошибка сервера. Попробуйте позже.');
         }
     };
 
@@ -157,24 +194,37 @@
         }
 
         const packageNames = { standard: 'Стандарт', premium: 'Премиум', luxury: 'Лакшери' };
+        const staffNames = {
+            'alex': 'Александр Волков',
+            'dmitry': 'Дмитрий Морозов',
+            'maria': 'Мария Соколова',
+            'max': 'Максим Орлов',
+            'denis': 'Денис Соловьев',
+            'artem': 'Артем Козлов',
+            'none': 'Не нужен'
+        };
         const badgeClass = s => s === 'новая' ? 'badge-new' : s === 'в работе' ? 'badge-progress' : 'badge-done';
 
         list.innerHTML = requests.map(r => {
             const msgMatch = r.message ? r.message.match(/Сообщение: (.+)/) : null;
             const msg = msgMatch ? msgMatch[1].trim() : r.message;
+            
+            const pName = staffNames[r.photographer] || r.photographer || '—';
+            const vName = staffNames[r.videographer] || r.videographer || '—';
+
             return `
             <div class="card">
                 <div class="card-header">
                     <span class="badge ${badgeClass(r.status)}">${r.status}</span>
                     <span class="card-date">${new Date(r.created_at).toLocaleDateString('ru-RU')}</span>
                 </div>
-                <div style="margin-top:10px;font-size:0.9em;display:flex;flex-direction:column;gap:6px;">
-                    ${r.guests ? `<div style="display:flex;gap:8px;"><span style="color:#aaa;width:110px;flex-shrink:0;">Гостей:</span><span>${r.guests}</span></div>` : ''}
-                    ${r.package ? `<div style="display:flex;gap:8px;"><span style="color:#aaa;width:110px;flex-shrink:0;">Пакет:</span><span>${packageNames[r.package] || r.package}</span></div>` : ''}
-                    ${r.photographer && r.photographer !== 'none' ? `<div style="display:flex;gap:8px;"><span style="color:#aaa;width:110px;flex-shrink:0;">Фотограф:</span><span>${r.photographer}</span></div>` : ''}
-                    ${r.videographer && r.videographer !== 'none' ? `<div style="display:flex;gap:8px;"><span style="color:#aaa;width:110px;flex-shrink:0;">Видеограф:</span><span>${r.videographer}</span></div>` : ''}
-                    ${r.budget ? `<div style="display:flex;gap:8px;"><span style="color:#aaa;width:110px;flex-shrink:0;">Бюджет:</span><span style="color:#c9a96e;font-weight:600;">${parseInt(r.budget).toLocaleString()} BYN</span></div>` : ''}
-                    ${msg ? `<div style="display:flex;gap:8px;"><span style="color:#aaa;width:110px;flex-shrink:0;">Сообщение:</span><span style="color:#555;">${msg}</span></div>` : ''}
+                <div style="margin-top:15px; display:flex; flex-direction:column; gap:8px;">
+                    ${r.guests ? `<div style="display:flex; justify-content:space-between; padding-bottom:4px; border-bottom:1px solid #f5f5f5;"><span style="color:#aaa; font-size:0.85em;">Количество гостей:</span><span style="font-weight:600;">${r.guests}</span></div>` : ''}
+                    ${r.package ? `<div style="display:flex; justify-content:space-between; padding-bottom:4px; border-bottom:1px solid #f5f5f5;"><span style="color:#aaa; font-size:0.85em;">Уровень сервиса:</span><span style="font-weight:600;">${packageNames[r.package] || r.package}</span></div>` : ''}
+                    ${r.photographer && r.photographer !== 'none' ? `<div style="display:flex; justify-content:space-between; padding-bottom:4px; border-bottom:1px solid #f5f5f5;"><span style="color:#aaa; font-size:0.85em;">Фотограф:</span><span style="font-weight:600;">${pName}</span></div>` : ''}
+                    ${r.videographer && r.videographer !== 'none' ? `<div style="display:flex; justify-content:space-between; padding-bottom:4px; border-bottom:1px solid #f5f5f5;"><span style="color:#aaa; font-size:0.85em;">Видеограф:</span><span style="font-weight:600;">${vName}</span></div>` : ''}
+                    ${r.budget ? `<div style="display:flex; justify-content:space-between; margin-top:5px; padding:10px; background:#faf9f7; border-radius:8px;"><span style="color:#888; font-weight:600;">Ориентировочный итог:</span><span style="color:#c9a96e; font-weight:700; font-size:1.1em;">${parseInt(r.budget).toLocaleString()} BYN</span></div>` : ''}
+                    ${msg ? `<div style="margin-top:10px;"><span style="color:#aaa; font-size:0.85em; display:block; margin-bottom:4px;">Ваше сообщение:</span><div style="color:#555; background:#fff; padding:10px; border:1px solid #eee; border-radius:8px; font-style:italic;">"${msg}"</div></div>` : ''}
                 </div>
             </div>`;
         }).join('');
@@ -216,6 +266,16 @@
 
     loadRequests();
     loadReviews();
+
+    // Автоматическое обновление данных каждые 3 секунды для "real-time" эффекта
+    setInterval(() => {
+        loadRequests();
+        // Отзывы обновляем чуть реже, так как они меняются не так часто
+    }, 3000);
+
+    setInterval(() => {
+        loadReviews();
+    }, 10000);
 </script>
 </body>
 </html>

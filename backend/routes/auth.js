@@ -83,7 +83,7 @@ router.get('/requests/my', async (req, res) => {
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const result = await pool.query(
-            'SELECT id, message, status, created_at FROM requests WHERE user_id = $1 ORDER BY created_at DESC',
+            'SELECT id, message, guests, package, photographer, videographer, budget, status, created_at FROM requests WHERE user_id = $1 ORDER BY created_at DESC',
             [decoded.id]
         );
         res.json(result.rows);
@@ -205,7 +205,24 @@ router.patch('/profile', async (req, res) => {
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const { name, email, password } = req.body;
+        const { currentPassword, name, email, password } = req.body;
+
+        if (!currentPassword) {
+            return res.status(400).json({ error: 'Введите текущий пароль' });
+        }
+
+        // Проверяем текущий пароль пользователя
+        const userRes = await pool.query('SELECT password FROM users WHERE id = $1', [decoded.id]);
+        const user = userRes.rows[0];
+        
+        if (!user) {
+            return res.status(404).json({ error: 'Пользователь не найден' });
+        }
+
+        const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
+        if (!isPasswordValid) {
+            return res.status(401).json({ error: 'Неверный текущий пароль' });
+        }
 
         let query, params;
         if (password) {

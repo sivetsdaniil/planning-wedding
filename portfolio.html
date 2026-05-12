@@ -28,16 +28,17 @@
                 <li><a href="portfolio.html" class="active">Портфолио</a></li>
                 <li><a href="team.html">Команда</a></li>
                 <li><a href="pricing.html">Цены</a></li>
+                <li><a href="index.html#calculator">Калькулятор</a></li>
                 <li><a href="index.html#contact">Контакты</a></li>
+                <li id="auth-nav"><a href="auth.html" class="nav-btn">Войти</a></li>
             </ul>
         </div>
     </nav>
 
-    <header class="page-header">
+    <header class="page-header" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; height: 400px; display: flex; align-items: center; justify-content: center; color: white; text-align: center;">
         <div class="container">
-            <h1>Наше Портфолио</h1>
-            <p>Истории любви, которые мы помогли воплотить в жизнь</p>
-            <div class="divider" style="width: 100px; height: 2px; background: var(--accent-color); margin: 20px auto;"></div>
+            <h1 style="font-family: 'Playfair Display', serif; font-size: 3.5rem; margin-bottom: 20px; text-shadow: 2px 2px 10px rgba(0,0,0,0.3); color: #ffffff;">Наше Портфолио</h1>
+            <p style="font-size: 1.2rem; max-width: 600px; margin: 0 auto; text-shadow: 1px 1px 5px rgba(0,0,0,0.3);">Истории любви, которые мы помогли воплотить в жизнь</p>
         </div>
     </header>
 
@@ -151,6 +152,16 @@
     </footer>
 
     <script>
+        // Авторизация
+        const user = JSON.parse(localStorage.getItem('user'));
+        const authNav = document.getElementById('auth-nav');
+        if (user && authNav) {
+            const profileLink = user.role === 'admin' ? 'admin.html' : 'profile.html';
+            authNav.innerHTML = `
+                <a href="${profileLink}" style="color:#c9a96e; font-weight:500;">👤 Привет, ${user.name}!</a>
+            `;
+        }
+
         // Lightbox Gallery
         const lightbox = document.getElementById('lightbox');
         const lightboxImg = lightbox.querySelector('img');

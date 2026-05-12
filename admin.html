@@ -260,6 +260,19 @@
 
                     const badgeClass = r.status === 'новая' ? 'badge-new' : r.status === 'в работе' ? 'badge-progress' : 'badge-done';
                     const packageNames = { standard: 'Стандарт', premium: 'Премиум', luxury: 'Лакшери' };
+                    const staffNames = {
+                        'alex': 'Александр Волков',
+                        'dmitry': 'Дмитрий Морозов',
+                        'maria': 'Мария Соколова',
+                        'max': 'Максим Орлов',
+                        'denis': 'Денис Соловьев',
+                        'artem': 'Артем Козлов',
+                        'none': 'Не нужен'
+                    };
+
+                    const pName = staffNames[r.photographer] || r.photographer || '—';
+                    const vName = staffNames[r.videographer] || r.videographer || '—';
+
                     return `
                     <div class="item-card">
                         <div class="item-header">
@@ -272,8 +285,8 @@
                         <div class="item-row"><span class="item-label">Email:</span><span class="item-value">${r.email || email}</span></div>
                         ${r.guests ? `<div class="item-row"><span class="item-label">Гостей:</span><span class="item-value">${r.guests}</span></div>` : ''}
                         ${r.package ? `<div class="item-row"><span class="item-label">Пакет:</span><span class="item-value">${packageNames[r.package] || r.package}</span></div>` : ''}
-                        ${r.photographer && r.photographer !== 'none' ? `<div class="item-row"><span class="item-label">Фотограф:</span><span class="item-value">${r.photographer}</span></div>` : ''}
-                        ${r.videographer && r.videographer !== 'none' ? `<div class="item-row"><span class="item-label">Видеограф:</span><span class="item-value">${r.videographer}</span></div>` : ''}
+                        ${r.photographer && r.photographer !== 'none' ? `<div class="item-row"><span class="item-label">Фотограф:</span><span class="item-value">${pName}</span></div>` : ''}
+                        ${r.videographer && r.videographer !== 'none' ? `<div class="item-row"><span class="item-label">Видеограф:</span><span class="item-value">${vName}</span></div>` : ''}
                         ${r.budget ? `<div class="item-row"><span class="item-label">Бюджет:</span><span class="item-value" style="color:#d4a373;font-weight:600;">${parseInt(r.budget).toLocaleString()} BYN</span></div>` : ''}
                         ${msg ? `<div class="item-row"><span class="item-label">Сообщение:</span><span class="item-value">${msg}</span></div>` : ''}
                         <div class="actions">
@@ -375,7 +388,7 @@
         const origSwitchMain = switchMain;
 
         load();
-        setInterval(load, 5000);
+        setInterval(load, 3000); // Обновляем каждые 3 секунды вместо 5
     </script>
 </body>
 </html>

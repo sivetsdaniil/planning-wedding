@@ -38,26 +38,25 @@
                 <span></span>
             </div>
             <ul class="nav-links">
-                <li><a href="#home">Главная</a></li>
-                <li><a href="#services">Услуги</a></li>
-                <li><a href="#calculator">Калькулятор</a></li>
-                <li><a href="#contact">Контакты</a></li>
-                <li class="nav-divider">|</li>
-                <li><a href="portfolio.html" class="nav-external">Портфолио</a></li>
-                <li><a href="team.html" class="nav-external">Команда</a></li>
-                <li><a href="pricing.html" class="nav-external">Цены</a></li>
+                <li><a href="index.html#home">Главная</a></li>
+                <li><a href="index.html#services">Услуги</a></li>
+                <li><a href="portfolio.html">Портфолио</a></li>
+                <li><a href="team.html">Команда</a></li>
+                <li><a href="pricing.html">Цены</a></li>
+                <li><a href="index.html#calculator">Калькулятор</a></li>
+                <li><a href="index.html#contact">Контакты</a></li>
                 <li id="auth-nav"><a href="auth.html" class="nav-btn">Войти</a></li>
             </ul>
         </div>
     </nav>
 
-    <section id="home" class="hero" style="height: 100vh;">
-        <div class="hero-content">
-            <h1>Создаем свадьбу вашей мечты</h1>
-            <p>Элегантность. Стиль. Ваши идеальные моменты.</p>
-            <a href="#contact" class="btn">Бесплатная консультация</a>
+    <header class="page-header" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1511795409834-ef04bbd61622?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; height: 400px; display: flex; align-items: center; justify-content: center; color: white; text-align: center;">
+        <div class="container">
+            <h1 style="font-family: 'Playfair Display', serif; font-size: 3.5rem; margin-bottom: 20px; text-shadow: 2px 2px 10px rgba(0,0,0,0.3); color: #ffffff;">Создаем свадьбу вашей мечты</h1>
+            <p style="font-size: 1.2rem; max-width: 600px; margin: 0 auto; text-shadow: 1px 1px 5px rgba(0,0,0,0.3);">Элегантность. Стиль. Ваши идеальные моменты.</p>
+            <a href="#contact" class="btn" style="margin-top: 20px;">Бесплатная консультация</a>
         </div>
-    </section>
+    </header>
 
     <section id="services" class="reveal">
         <div class="container">
@@ -155,9 +154,9 @@
                     <select id="photographer" class="form-group"
                         style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">
                         <option value="none">Не нужен</option>
-                        <option value="dmitry">Дмитрий Морозов (600 BYN)</option>
-                        <option value="alex" selected>Александр Волков (1200 BYN)</option>
-                        <option value="maria">Мария Соколова (2500 BYN)</option>
+                        <option value="Дмитрий Морозов">Дмитрий Морозов (600 BYN)</option>
+                        <option value="Александр Волков" selected>Александр Волков (1200 BYN)</option>
+                        <option value="Мария Соколова">Мария Соколова (2500 BYN)</option>
                     </select>
                     <small><a href="team.html" style="color: #d4a373;">Посмотреть портфолио фотографов</a></small>
                 </div>
@@ -166,9 +165,9 @@
                     <select id="videographer" class="form-group"
                         style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">
                         <option value="none">Не нужен</option>
-                        <option value="max">Максим Орлов (700 BYN)</option>
-                        <option value="denis" selected>Денис Соловьев (1000 BYN)</option>
-                        <option value="artem">Артем Козлов (2200 BYN)</option>
+                        <option value="Максим Орлов">Максим Орлов (700 BYN)</option>
+                        <option value="Денис Соловьев" selected>Денис Соловьев (1000 BYN)</option>
+                        <option value="Артем Козлов">Артем Козлов (2200 BYN)</option>
                     </select>
                     <small><a href="team.html" style="color: #d4a373;">Посмотреть портфолио видеографов</a></small>
                 </div>
@@ -192,47 +191,6 @@
                     <p class="calc-disclaimer">*Расчет является предварительным и зависит от конкретных пожеланий и
                         даты.</p>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="reviews" class="reveal" style="background-color: #fff;">
-        <div class="container">
-            <div class="comments-container reveal">
-                <div class="section-title" style="margin-top: 80px; margin-bottom: 40px;">
-                    <h3>Отзывы наших пар</h3>
-                    <p>Поделитесь вашими впечатлениями о нашей работе</p>
-                </div>
-
-                <div class="comment-form">
-                    <form id="comment-form">
-                        <div class="form-group">
-                            <input type="text" name="name" id="comment-name" placeholder="Ваше имя" required>
-                        </div>
-                        <div class="rating-group">
-                            <input type="radio" name="rating" id="star5" value="5" required><label for="star5">★</label>
-                            <input type="radio" name="rating" id="star4" value="4"><label for="star4">★</label>
-                            <input type="radio" name="rating" id="star3" value="3"><label for="star3">★</label>
-                            <input type="radio" name="rating" id="star2" value="2"><label for="star2">★</label>
-                            <input type="radio" name="rating" id="star1" value="1"><label for="star1">★</label>
-                            <span style="margin-right: 15px; font-weight: 600;">Оценка:</span>
-                        </div>
-                        <div class="form-group">
-                            <textarea name="message" id="comment-text" rows="3" placeholder="Ваш отзыв или пожелание"
-                                required></textarea>
-                        </div>
-                        <button type="submit" class="btn">Отправить отзыв</button>
-                    </form>
-                    <div id="comment-status"
-                        style="display: none; margin-top: 20px; padding: 15px; border-radius: 5px; text-align: center;">
-                    </div>
-                </div>
-
-                <div id="comments-list" class="comments-list">
-                    <!-- Сюда будут подгружаться только одобренные комментарии -->
-                </div>
-
-
             </div>
         </div>
     </section>
@@ -275,6 +233,47 @@
                         style="display: none; margin-top: 20px; padding: 15px; border-radius: 5px; text-align: center;">
                     </div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="reviews" class="reveal" style="background-color: #fff;">
+        <div class="container">
+            <div class="comments-container reveal">
+                <div class="section-title" style="margin-top: 20px; margin-bottom: 40px;">
+                    <h3>Отзывы наших пар</h3>
+                    <p>Поделитесь вашими впечатлениями о нашей работе</p>
+                </div>
+
+                <div class="comment-form">
+                    <form id="comment-form">
+                        <div class="form-group">
+                            <input type="text" name="name" id="comment-name" placeholder="Ваше имя" required>
+                        </div>
+                        <div class="rating-group">
+                            <input type="radio" name="rating" id="star5" value="5" required><label for="star5">★</label>
+                            <input type="radio" name="rating" id="star4" value="4"><label for="star4">★</label>
+                            <input type="radio" name="rating" id="star3" value="3"><label for="star3">★</label>
+                            <input type="radio" name="rating" id="star2" value="2"><label for="star2">★</label>
+                            <input type="radio" name="rating" id="star1" value="1"><label for="star1">★</label>
+                            <span style="margin-right: 15px; font-weight: 600;">Оценка:</span>
+                        </div>
+                        <div class="form-group">
+                            <textarea name="message" id="comment-text" rows="3" placeholder="Ваш отзыв или пожелание"
+                                required></textarea>
+                        </div>
+                        <button type="submit" class="btn">Отправить отзыв</button>
+                    </form>
+                    <div id="comment-status"
+                        style="display: none; margin-top: 20px; padding: 15px; border-radius: 5px; text-align: center;">
+                    </div>
+                </div>
+
+                <div id="comments-list" class="comments-list">
+                    <!-- Сюда будут подгружаться только одобренные комментарии -->
+                </div>
+
+
             </div>
         </div>
     </section>
@@ -437,22 +436,22 @@
             // Цены фотографов
             const photoPrices = {
                 'none': 0,
-                'dmitry': 600,
-                'alex': 1200,
-                'maria': 2500
+                'Дмитрий Морозов': 600,
+                'Александр Волков': 1200,
+                'Мария Соколова': 2500
             };
 
             // Цены видеографов
             const videoPrices = {
                 'none': 0,
-                'max': 700,
-                'denis': 1000,
-                'artem': 2200
+                'Максим Орлов': 700,
+                'Денис Соловьев': 1000,
+                'Артем Козлов': 2200
             };
 
             const banquet = guests * guestPrice;
             const decor = decorBase + (guests * 20);
-            const media = photoPrices[photoLevel] + videoPrices[videoLevel];
+            const media = (photoPrices[photoLevel] || 0) + (videoPrices[videoLevel] || 0);
             const total = banquet + decor + media;
 
             resBanquet.innerText = banquet.toLocaleString() + ' BYN';
@@ -468,8 +467,8 @@
             const budgetField = document.getElementById('form-budget');
             if (guestsField) guestsField.value = guests;
             if (packageField) packageField.value = level;
-            if (photographerField) photographerField.value = photoLevel;
-            if (videographerField) videographerField.value = videoLevel;
+            if (photographerField) photographerField.value = photoLevel === 'none' ? 'Не нужен' : photoLevel;
+            if (videographerField) videographerField.value = videoLevel === 'none' ? 'Не нужен' : videoLevel;
             if (budgetField) budgetField.value = total;
 
             // Показываем сводку в форме
@@ -477,7 +476,9 @@
             const summaryText = document.getElementById('calc-summary-text');
             if (summary && summaryText) {
                 summary.style.display = 'block';
-                summaryText.innerHTML = `Гостей: <b>${guests}</b> · Пакет: <b>${level}</b> · Бюджет: <b>${total.toLocaleString()} BYN</b>`;
+                const pName = photoLevel === 'none' ? 'Не нужен' : photoLevel;
+                const vName = videoLevel === 'none' ? 'Не нужен' : videoLevel;
+                summaryText.innerHTML = `Гостей: <b>${guests}</b> · Пакет: <b>${level}</b> · Бюджет: <b>${total.toLocaleString()} BYN</b><br>Фото: <b>${pName}</b> · Видео: <b>${vName}</b>`;
             }
         };
 
@@ -587,10 +588,9 @@
         const user = JSON.parse(localStorage.getItem('user'));
         const authNav = document.getElementById('auth-nav');
         if (user && authNav) {
-                const profileLink = user.role === 'admin' ? 'admin.html' : 'profile.html';
-                authNav.innerHTML = `
-                <a href="${profileLink}" style="color:#c9a96e; font-weight:500;">👤 ${user.name}</a>
-                <a href="#" onclick="logout()" style="color:#999; font-size:13px; margin-left:10px;">Выйти</a>
+            const profileLink = user.role === 'admin' ? 'admin.html' : 'profile.html';
+            authNav.innerHTML = `
+                <a href="${profileLink}" style="color:#c9a96e; font-weight:500;">👤 Привет, ${user.name}!</a>
             `;
         }
         function logout() {
