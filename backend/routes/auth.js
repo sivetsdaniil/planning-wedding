@@ -52,11 +52,10 @@ router.post('/login', async (req, res) => {
 
 // Создание заявки
 router.post('/request', async (req, res) => {
-    const { name, email, message } = req.body;
-    if (!name || !email || !message) return res.status(400).json({ error: 'Заполните все поля заявки' });
+    const { name, email, message, guests, package: pkg, photographer, videographer, budget } = req.body;
+    if (!name || !email) return res.status(400).json({ error: 'Заполните имя и email' });
 
     const token = req.headers.authorization?.split(' ')[1];
-
     let user_id = null;
     if (token) {
         try {
@@ -67,8 +66,8 @@ router.post('/request', async (req, res) => {
 
     try {
         await pool.query(
-            'INSERT INTO requests (user_id, message, status) VALUES ($1, $2, $3)',
-            [user_id, `Имя: ${name}, Email: ${email}, Сообщение: ${message}`, 'новая']
+            'INSERT INTO requests (user_id, name, email, message, guests, package, photographer, videographer, budget, status) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)',
+            [user_id, name, email, message || '', guests || null, pkg || null, photographer || null, videographer || null, budget || null, 'новая']
         );
         res.json({ success: true });
     } catch (err) {

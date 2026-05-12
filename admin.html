@@ -259,19 +259,25 @@
                     const msg = msgMatch ? msgMatch[1].trim() : r.message;
 
                     const badgeClass = r.status === 'новая' ? 'badge-new' : r.status === 'в работе' ? 'badge-progress' : 'badge-done';
+                    const packageNames = { standard: 'Стандарт', premium: 'Премиум', luxury: 'Лакшери' };
                     return `
                     <div class="item-card">
                         <div class="item-header">
                             <div>
-                                <span class="item-name">${name}</span>
+                                <span class="item-name">${r.name || name}</span>
                                 <span class="badge ${badgeClass}" style="margin-left:8px;">${r.status}</span>
                             </div>
                             <span class="item-date">${new Date(r.created_at).toLocaleDateString('ru-RU')}</span>
                         </div>
-                        <div class="item-row"><span class="item-label">Email:</span><span class="item-value">${email}</span></div>
-                        <div class="item-row"><span class="item-label">Сообщение:</span><span class="item-value">${msg}</span></div>
+                        <div class="item-row"><span class="item-label">Email:</span><span class="item-value">${r.email || email}</span></div>
+                        ${r.guests ? `<div class="item-row"><span class="item-label">Гостей:</span><span class="item-value">${r.guests}</span></div>` : ''}
+                        ${r.package ? `<div class="item-row"><span class="item-label">Пакет:</span><span class="item-value">${packageNames[r.package] || r.package}</span></div>` : ''}
+                        ${r.photographer && r.photographer !== 'none' ? `<div class="item-row"><span class="item-label">Фотограф:</span><span class="item-value">${r.photographer}</span></div>` : ''}
+                        ${r.videographer && r.videographer !== 'none' ? `<div class="item-row"><span class="item-label">Видеограф:</span><span class="item-value">${r.videographer}</span></div>` : ''}
+                        ${r.budget ? `<div class="item-row"><span class="item-label">Бюджет:</span><span class="item-value" style="color:#d4a373;font-weight:600;">${parseInt(r.budget).toLocaleString()} BYN</span></div>` : ''}
+                        ${msg ? `<div class="item-row"><span class="item-label">Сообщение:</span><span class="item-value">${msg}</span></div>` : ''}
                         <div class="actions">
-                            <button class="btn-email" onclick="window.location.href='mailto:${email}'">✉ Написать</button>
+                            <button class="btn-email" onclick="window.location.href='mailto:${r.email || email}'">✉ Написать</button>
                             ${r.status !== 'новая' ? `<button class="btn-approve" onclick="changeStatus(${r.id}, 'новая')">Новая</button>` : ''}
                             ${r.status !== 'в работе' ? `<button style="background:#d1ecf1;color:#0c5460;" onclick="changeStatus(${r.id}, 'в работе')">В работе</button>` : ''}
                             ${r.status !== 'завершена' ? `<button class="btn-approve" onclick="changeStatus(${r.id}, 'завершена')">Завершена</button>` : ''}

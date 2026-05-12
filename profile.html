@@ -37,6 +37,7 @@
         .badge-new { background: #fff3cd; color: #856404; }
         .badge-done { background: #d4edda; color: #155724; }
         .badge-pending { background: #e2e3e5; color: #383d41; }
+        .badge-progress { background: #d1ecf1; color: #0c5460; }
         .rating { color: #d4af37; font-size: 1.1em; margin-bottom: 6px; }
         .empty { text-align: center; color: #aaa; padding: 40px; font-size: 0.9em; }
         .back-link { display: inline-block; margin-bottom: 20px; color: #c9a96e; text-decoration: none; font-size: 0.9em; }
@@ -155,23 +156,25 @@
             return;
         }
 
+        const packageNames = { standard: 'Стандарт', premium: 'Премиум', luxury: 'Лакшери' };
+        const badgeClass = s => s === 'новая' ? 'badge-new' : s === 'в работе' ? 'badge-progress' : 'badge-done';
+
         list.innerHTML = requests.map(r => {
-            const nameMatch = r.message.match(/Имя: ([^,]+)/);
-            const emailMatch = r.message.match(/Email: ([^,]+)/);
-            const msgMatch = r.message.match(/Сообщение: (.+)/);
-            const name = nameMatch ? nameMatch[1].trim() : '—';
-            const email = emailMatch ? emailMatch[1].trim() : '—';
+            const msgMatch = r.message ? r.message.match(/Сообщение: (.+)/) : null;
             const msg = msgMatch ? msgMatch[1].trim() : r.message;
             return `
             <div class="card">
                 <div class="card-header">
-                    <span class="badge badge-new">${r.status}</span>
+                    <span class="badge ${badgeClass(r.status)}">${r.status}</span>
                     <span class="card-date">${new Date(r.created_at).toLocaleDateString('ru-RU')}</span>
                 </div>
                 <div style="margin-top:10px;font-size:0.9em;display:flex;flex-direction:column;gap:6px;">
-                    <div style="display:flex;gap:8px;"><span style="color:#aaa;width:90px;flex-shrink:0;">Имя:</span><span>${name}</span></div>
-                    <div style="display:flex;gap:8px;"><span style="color:#aaa;width:90px;flex-shrink:0;">Email:</span><span>${email}</span></div>
-                    <div style="display:flex;gap:8px;"><span style="color:#aaa;width:90px;flex-shrink:0;">Сообщение:</span><span style="color:#555;">${msg}</span></div>
+                    ${r.guests ? `<div style="display:flex;gap:8px;"><span style="color:#aaa;width:110px;flex-shrink:0;">Гостей:</span><span>${r.guests}</span></div>` : ''}
+                    ${r.package ? `<div style="display:flex;gap:8px;"><span style="color:#aaa;width:110px;flex-shrink:0;">Пакет:</span><span>${packageNames[r.package] || r.package}</span></div>` : ''}
+                    ${r.photographer && r.photographer !== 'none' ? `<div style="display:flex;gap:8px;"><span style="color:#aaa;width:110px;flex-shrink:0;">Фотограф:</span><span>${r.photographer}</span></div>` : ''}
+                    ${r.videographer && r.videographer !== 'none' ? `<div style="display:flex;gap:8px;"><span style="color:#aaa;width:110px;flex-shrink:0;">Видеограф:</span><span>${r.videographer}</span></div>` : ''}
+                    ${r.budget ? `<div style="display:flex;gap:8px;"><span style="color:#aaa;width:110px;flex-shrink:0;">Бюджет:</span><span style="color:#c9a96e;font-weight:600;">${parseInt(r.budget).toLocaleString()} BYN</span></div>` : ''}
+                    ${msg ? `<div style="display:flex;gap:8px;"><span style="color:#aaa;width:110px;flex-shrink:0;">Сообщение:</span><span style="color:#555;">${msg}</span></div>` : ''}
                 </div>
             </div>`;
         }).join('');

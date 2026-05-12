@@ -256,6 +256,15 @@
                         <div class="form-group">
                             <input type="email" name="email" placeholder="Email" required>
                         </div>
+                        <div id="calc-summary" style="display:none; background:#faf9f7; border-radius:8px; padding:14px; margin-bottom:16px; font-size:0.9em; color:#555;">
+                            <strong style="color:#333;">Параметры из калькулятора:</strong>
+                            <div id="calc-summary-text" style="margin-top:6px;"></div>
+                        </div>
+                        <input type="hidden" name="guests" id="form-guests">
+                        <input type="hidden" name="package" id="form-package">
+                        <input type="hidden" name="photographer" id="form-photographer">
+                        <input type="hidden" name="videographer" id="form-videographer">
+                        <input type="hidden" name="budget" id="form-budget">
                         <div class="form-group">
                             <textarea name="message" rows="5" placeholder="Расскажите о вашей свадьбе"
                                 required></textarea>
@@ -450,6 +459,26 @@
             resDecor.innerText = decor.toLocaleString() + ' BYN';
             resMedia.innerText = media.toLocaleString() + ' BYN';
             resTotal.innerText = total.toLocaleString() + ' BYN';
+
+            // Обновляем скрытые поля формы
+            const guestsField = document.getElementById('form-guests');
+            const packageField = document.getElementById('form-package');
+            const photographerField = document.getElementById('form-photographer');
+            const videographerField = document.getElementById('form-videographer');
+            const budgetField = document.getElementById('form-budget');
+            if (guestsField) guestsField.value = guests;
+            if (packageField) packageField.value = level;
+            if (photographerField) photographerField.value = photoLevel;
+            if (videographerField) videographerField.value = videoLevel;
+            if (budgetField) budgetField.value = total;
+
+            // Показываем сводку в форме
+            const summary = document.getElementById('calc-summary');
+            const summaryText = document.getElementById('calc-summary-text');
+            if (summary && summaryText) {
+                summary.style.display = 'block';
+                summaryText.innerHTML = `Гостей: <b>${guests}</b> · Пакет: <b>${level}</b> · Бюджет: <b>${total.toLocaleString()} BYN</b>`;
+            }
         };
 
         guestsInput.addEventListener('input', calculate);
