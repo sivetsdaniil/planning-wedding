@@ -260,4 +260,35 @@ router.patch('/admin/requests/:id/status', requireAdmin, async (req, res) => {
     }
 });
 
+// Аналитика
+router.get('/admin/analytics', requireAdmin, async (req, res) => {
+    try {
+        const requestsByMonth = await pool.query(`
+            SELECT DATE_TRUNC('month', created_at) as month, COUNT(*) as count
+            FROM requests
+            GROUP BY month
+            ORDER BY month
+        `);
+
+        const avgRating = await pool.query(`
+            SELECT ROUND(AVG(rating)::numeric, 2) as avg_rating, COUNT(*) as total
+            FROM reviews WHERE approved = true
+        `);
+
+        const statusStats = await pool.query(`
+            SELECT status, COUNT(*) as count
+            FROM requests
+            GROUP BY status
+        `);
+
+        res.json({
+            requestsByMonth: requestsByMonth.rows,
+            avgRating: avgRating.rows[0],
+            statusStats: statusStats.rows
+        });
+    } catch (err) {
+        res.status(500).json({ error: 'Ошибка сервера' });
+    }
+});
+
 module.exports = router;

@@ -57,6 +57,18 @@
         .filter-tab.active { background: #d4a373; color: white; border-color: #d4a373; }
 
         .empty { text-align: center; color: #aaa; padding: 40px; }
+        .analytics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+        .analytics-card { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .analytics-card h3 { font-size: 0.9em; color: #888; margin: 0 0 16px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .formula { background: #faf9f7; border-left: 3px solid #d4a373; padding: 10px 14px; margin: 10px 0; font-family: monospace; font-size: 0.9em; color: #555; border-radius: 0 6px 6px 0; }
+        .big-num { font-size: 2.5em; font-weight: 600; color: #d4a373; }
+        .bar-chart { margin-top: 10px; }
+        .bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 0.82em; }
+        .bar-label { width: 60px; color: #888; flex-shrink: 0; text-align: right; }
+        .bar-track { flex: 1; background: #f0f0f0; border-radius: 4px; height: 20px; overflow: hidden; }
+        .bar-fill { height: 100%; background: #d4a373; border-radius: 4px; transition: width 0.5s; display: flex; align-items: center; padding-left: 6px; color: white; font-size: 0.8em; }
+        .forecast-num { font-size: 1.8em; font-weight: 600; color: #d4a373; margin: 8px 0; }
+        .regression-details { font-size: 0.82em; color: #888; margin-top: 8px; }
         .back-link { display: block; text-align: center; margin-top: 24px; color: #d4a373; text-decoration: none; }
     </style>
 </head>
@@ -67,6 +79,7 @@
         <div class="main-tabs">
             <button class="main-tab active" onclick="switchMain('reviews', this)">📝 Отзывы</button>
             <button class="main-tab" onclick="switchMain('requests', this)">📋 Заявки</button>
+            <button class="main-tab" onclick="switchMain('analytics', this)">📊 Аналитика</button>
         </div>
 
         <!-- ОТЗЫВЫ -->
@@ -94,6 +107,33 @@
             <div id="requests-list"></div>
         </div>
 
+        <!-- АНАЛИТИКА -->
+        <div id="section-analytics" class="tab-section">
+            <div class="analytics-grid">
+                <div class="analytics-card">
+                    <h3>Средний рейтинг</h3>
+                    <div class="formula">R̄ = Σrᵢ / n</div>
+                    <div class="big-num" id="an-avg-rating">—</div>
+                    <div style="color:#888;font-size:0.85em;margin-top:4px;">из 5 звёзд · <span id="an-reviews-count">0</span> отзывов</div>
+                </div>
+                <div class="analytics-card">
+                    <h3>Прогноз заявок</h3>
+                    <div class="formula">ŷ = a + b·x</div>
+                    <div class="forecast-num" id="an-forecast">—</div>
+                    <div style="color:#888;font-size:0.85em;">заявок в следующем месяце</div>
+                    <div class="regression-details" id="an-regression"></div>
+                </div>
+            </div>
+            <div class="analytics-card" style="margin-bottom:16px;">
+                <h3>Заявки по месяцам</h3>
+                <div class="bar-chart" id="an-bar-chart"></div>
+            </div>
+            <div class="analytics-card">
+                <h3>Статусы заявок</h3>
+                <div class="bar-chart" id="an-status-chart"></div>
+            </div>
+        </div>
+
         <a href="index.html" class="back-link">← Вернуться на сайт</a>
     </div>
 
@@ -109,6 +149,7 @@
             btn.classList.add('active');
             document.getElementById('section-' + section).classList.add('active');
             if (section === 'requests') loadRequests();
+            if (section === 'analytics') loadAnalytics();
         };
 
         // ===== ОТЗЫВЫ =====
@@ -258,6 +299,74 @@
             });
             loadRequests();
         };
+
+        // ===== АНАЛИТИКА =====
+        const loadAnalytics = async () => {
+            try {
+                const res = await fetch('/api/auth/admin/analytics', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+
+                // Средний рейтинг
+                document.getElementById('an-avg-rating').textContent = data.avgRating.avg_rating || '—';
+                document.getElementById('an-reviews-count').textContent = data.avgRating.total;
+
+                // График заявок по месяцам
+                const months = data.requestsByMonth;
+                const maxCount = Math.max(...months.map(m => parseInt(m.count)), 1);
+                document.getElementById('an-bar-chart').innerHTML = months.length === 0
+                    ? '<div style="color:#aaa;text-align:center;padding:20px;">Данных пока нет</div>'
+                    : months.map(m => {
+                        const label = new Date(m.month).toLocaleDateString('ru-RU', { month: 'short', year: '2-digit' });
+                        const pct = Math.round(parseInt(m.count) / maxCount * 100);
+                        return `<div class="bar-row">
+                            <span class="bar-label">${label}</span>
+                            <div class="bar-track">
+                                <div class="bar-fill" style="width:${pct}%">${m.count}</div>
+                            </div>
+                        </div>`;
+                    }).join('');
+
+                // Линейная регрессия для прогноза
+                if (months.length >= 2) {
+                    const n = months.length;
+                    const xs = months.map((_, i) => i);
+                    const ys = months.map(m => parseInt(m.count));
+                    const sumX = xs.reduce((a, b) => a + b, 0);
+                    const sumY = ys.reduce((a, b) => a + b, 0);
+                    const sumXY = xs.reduce((s, x, i) => s + x * ys[i], 0);
+                    const sumX2 = xs.reduce((s, x) => s + x * x, 0);
+                    const b = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+                    const a = (sumY - b * sumX) / n;
+                    const forecast = Math.max(0, Math.round(a + b * n));
+                    document.getElementById('an-forecast').textContent = forecast;
+                    document.getElementById('an-regression').textContent = `a = ${a.toFixed(2)}, b = ${b.toFixed(2)}`;
+                } else {
+                    document.getElementById('an-forecast').textContent = '—';
+                    document.getElementById('an-regression').textContent = 'Недостаточно данных';
+                }
+
+                // Статусы
+                const statuses = data.statusStats;
+                const maxS = Math.max(...statuses.map(s => parseInt(s.count)), 1);
+                document.getElementById('an-status-chart').innerHTML = statuses.length === 0
+                    ? '<div style="color:#aaa;text-align:center;padding:20px;">Данных нет</div>'
+                    : statuses.map(s => {
+                        const pct = Math.round(parseInt(s.count) / maxS * 100);
+                        return `<div class="bar-row">
+                            <span class="bar-label">${s.status}</span>
+                            <div class="bar-track">
+                                <div class="bar-fill" style="width:${pct}%">${s.count}</div>
+                            </div>
+                        </div>`;
+                    }).join('');
+
+            } catch(e) { console.error(e); }
+        };
+
+        // Обновляем switchMain чтобы грузил аналитику
+        const origSwitchMain = switchMain;
 
         load();
         setInterval(load, 5000);
