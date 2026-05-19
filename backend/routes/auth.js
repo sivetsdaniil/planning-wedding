@@ -11,9 +11,9 @@ const pool = new Pool({
     port: process.env.DB_PORT,
     database: process.env.DB_NAME,
 });
-pool.on('connect', client => {
-    client.query("SET client_encoding TO 'UTF8'");
-});
+
+// Убрали pool.on('connect'), так как кодировка UTF8 обычно стоит по умолчанию, 
+// а этот метод вызывал DeprecationWarning при параллельных запросах.
 
 // Регистрация
 router.post('/register', async (req, res) => {
@@ -116,6 +116,7 @@ router.post('/review', async (req, res) => {
             'INSERT INTO reviews (user_id, text, rating, approved) VALUES ($1, $2, $3, $4)',
             [user_id, message || '', parseInt(rating), false] // approved: false по умолчанию
         );
+
         res.json({ success: true });
     } catch (err) {
         res.status(500).json({ error: 'Ошибка сервера' });
@@ -241,7 +242,7 @@ router.patch('/profile', async (req, res) => {
         }
 
         const result = await pool.query(query, params);
-        res.json(result.rows[0]);
+        res.status(201).json(result.rows[0]);
     } catch (err) {
         res.status(500).json({ error: 'Ошибка сервера' });
     }

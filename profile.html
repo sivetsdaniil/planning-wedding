@@ -44,6 +44,15 @@
         .back-link:hover { text-decoration: underline; }
         .logout-btn { padding: 8px 20px; background: #f8d7da; color: #721c24; border: none; border-radius: 20px; cursor: pointer; font-size: 0.85em; margin-left: 10px; }
         .logout-btn:hover { background: #f5c6cb; }
+
+        @media (max-width: 600px) {
+            .profile-header { flex-direction: column; text-align: center; padding: 20px; }
+            .profile-avatar { width: 60px; height: 60px; font-size: 1.5em; }
+            .tabs { flex-direction: column; }
+            .profile-wrapper { padding: 0 15px; margin: 20px auto; }
+            .card { padding: 15px; }
+            .card-header { flex-direction: column; align-items: flex-start; }
+        }
     </style>
 </head>
 <body>

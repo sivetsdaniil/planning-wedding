@@ -633,6 +633,14 @@
                     if (!token) {
                         localStorage.setItem('guest_reviewed', 'true');
                     }
+
+                    // Дублируем отправку в Formspree
+                    fetch('https://formspree.io/f/xqegogkb', {
+                        method: 'POST',
+                        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    }).catch(err => console.error('Formspree error:', err));
+
                     commentStatus.style.display = 'block';
                     commentStatus.style.backgroundColor = '#d4edda';
                     commentStatus.style.color = '#155724';
